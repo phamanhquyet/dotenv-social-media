@@ -1,11 +1,11 @@
-import { Routes, Route } from "react-router-dom";
-import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
+import { Route, Routes } from "react-router-dom";
+import AuthLayout from "./_auth/AuthLayout";
 import SigninForm from "./_auth/forms/SigninForm";
 import SignupForm from "./_auth/forms/SignupForm";
-import { Home } from "./_root/pages";
-import AuthLayout from "./_auth/AuthLayout";
 import RootLayout from "./_root/RootLayout";
-import { Toaster } from "@/components/ui/toaster";
+import { Home } from "./_root/pages";
+import "./globals.css";
 
 const App = () => {
   return (

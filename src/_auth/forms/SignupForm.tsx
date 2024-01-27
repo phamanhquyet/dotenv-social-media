@@ -1,5 +1,5 @@
+import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -9,17 +9,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import { SignupValidation } from "@/lib/validation";
-import { z } from "zod";
-import Loader from "@/components/shared/Loader";
-import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { useUserContext } from "@/context/AuthContext";
 import {
   useCreateUserAccount,
   useSignInAccount,
 } from "@/lib/react-query/queriesAndMutations";
-import { useUserContext } from "@/context/AuthContext";
+import { SignupValidation } from "@/lib/validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { z } from "zod";
 
 const SignupForm = () => {
   const { toast } = useToast();
