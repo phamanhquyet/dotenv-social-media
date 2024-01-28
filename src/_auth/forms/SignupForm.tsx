@@ -46,6 +46,7 @@ const SignupForm = () => {
     const newUser = await createUserAccount(values);
     if (!newUser) {
       return toast({
+        variant: "destructive",
         title: "Đăng ký thất bại, vui lòng thử lại!",
       });
     }

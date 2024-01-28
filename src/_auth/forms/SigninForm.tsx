@@ -42,6 +42,7 @@ const SigninForm = () => {
 
     if (!session) {
       return toast({
+        variant: "destructive",
         title: "Đăng nhập thất bại, vui lòng thử lại!",
       });
     }
@@ -53,6 +54,7 @@ const SigninForm = () => {
       navigate("/");
     } else {
       return toast({
+        variant: "destructive",
         title: "Đăng nhập thất bại, vui lòng thử lại!",
       });
     }
