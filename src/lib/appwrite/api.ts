@@ -93,20 +93,19 @@ export async function createPost(post: INewPost) {
     const fileUrl = getFilePreview(uploadedFile.$id);
 
     if (!fileUrl) {
-      deleteFile(uploadedFile.$id);
+      await deleteFile(uploadedFile.$id);
       throw Error;
     }
 
     //convert tags in an array
     const tags = post.tags?.replace(/ /g, "").split(",") || [];
-
     //save post to database
     const newPost = await databases.createDocument(
       appwriteConfig.databaseId,
       appwriteConfig.postCollectionId,
       ID.unique(),
       {
-        creator: post.userId,
+        creators: post.userId,
         caption: post.caption,
         imageUrl: fileUrl,
         imageId: uploadedFile.$id,
@@ -118,6 +117,7 @@ export async function createPost(post: INewPost) {
       await deleteFile(uploadedFile.$id);
       throw Error;
     }
+    return newPost;
   } catch (error) {
     console.log(error);
   }
@@ -136,7 +136,7 @@ export async function uploadFile(file: File) {
   }
 }
 
-export async function getFilePreview(fileId: string) {
+export function getFilePreview(fileId: string) {
   try {
     const fileUrl = storage.getFilePreview(
       appwriteConfig.storageId,
@@ -146,6 +146,8 @@ export async function getFilePreview(fileId: string) {
       "top",
       100
     );
+
+    if (!fileUrl) throw Error;
     return fileUrl;
   } catch (error) {
     console.log(error);
