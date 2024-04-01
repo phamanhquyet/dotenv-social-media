@@ -46,7 +46,6 @@ const SignupForm = () => {
     const newUser = await createUserAccount(values);
     if (!newUser) {
       return toast({
-        variant: "destructive",
         title: "Đăng ký thất bại, vui lòng thử lại!",
       });
     }
@@ -137,7 +136,7 @@ const SignupForm = () => {
             )}
           />
           <Button type="submit" className="shad-button_primary">
-            {isCreatingAccount ? (
+            {isCreatingAccount || isUserLoading || isSigningIn ? (
               <div className="flex-center gap-2">
                 <Loader />
                 Đang tải...

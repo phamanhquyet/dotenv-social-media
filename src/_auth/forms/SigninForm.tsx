@@ -42,7 +42,6 @@ const SigninForm = () => {
 
     if (!session) {
       return toast({
-        variant: "destructive",
         title: "Đăng nhập thất bại, vui lòng thử lại!",
       });
     }
@@ -54,7 +53,6 @@ const SigninForm = () => {
       navigate("/");
     } else {
       return toast({
-        variant: "destructive",
         title: "Đăng nhập thất bại, vui lòng thử lại!",
       });
     }
@@ -62,7 +60,7 @@ const SigninForm = () => {
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">
-        <img src="/assets/images/logo5.svg" />
+        <img src="/assets/images/logo_test.svg" />
         <h2 className="h3-bold md:h4-bold pt-5 sm:pt-12">
           Đăng nhập vào tài khoản của bạn
         </h2>
@@ -77,7 +75,7 @@ const SigninForm = () => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel className="shad-form_label">Email</FormLabel>
                 <FormControl>
                   <Input type="Email" className="shad-input" {...field} />
                 </FormControl>
@@ -90,7 +88,7 @@ const SigninForm = () => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mật khẩu</FormLabel>
+                <FormLabel className="shad-form_label">Mật khẩu</FormLabel>
                 <FormControl>
                   <Input type="password" className="shad-input" {...field} />
                 </FormControl>
