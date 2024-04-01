@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import useDebounce from "../hooks/useDebounce";
 import Loader from "@/components/shared/Loader";
 import { useInView } from "react-intersection-observer";
+import { ExploreSkeleton, GridPostsSkeleton } from "@/components/skeletons";
 
 export type SearchResultProps = {
   isSearchFetching: boolean;
@@ -19,7 +20,7 @@ const SearchResults = ({
   searchedPosts,
 }: SearchResultProps) => {
   if (isSearchFetching) {
-    return <Loader />;
+    return <GridPostsSkeleton />;
   } else if (searchedPosts && searchedPosts.documents.length > 0) {
     return <GridPostList posts={searchedPosts.documents} />;
   } else {
@@ -90,7 +91,9 @@ const Explore = () => {
         </div>
       </div>
       <div className="flex flex-wrap gap-9 w-full max-w-5xl">
-        {shouldShowSearchResults ? (
+        {isSearchFetching ? (
+          <ExploreSkeleton />
+        ) : shouldShowSearchResults ? (
           <SearchResults
             isSearchFetching={isSearchFetching}
             searchedPosts={searchedPosts}
