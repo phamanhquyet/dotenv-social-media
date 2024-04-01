@@ -48,6 +48,7 @@ const PostCard = ({ post }: PostCardProps) => {
       </div>
       <Link to={`/post/${post.$id}`}>
         <div className="small-medium lg:base-medium py-5">
+          <p className="font-extrabold leading-10">{post.title}</p>
           <p>{post.caption}</p>
           <ul className="flex gap-1 mt-2">
             {post.tags.map((tag: string) => (
