@@ -24,6 +24,7 @@ export type IUpdateUser = {
 
 export type INewPost = {
   userId: string;
+  title: string;
   caption: string;
   file: File[];
   location?: string;
@@ -32,6 +33,7 @@ export type INewPost = {
 
 export type IUpdatePost = {
   postId: string;
+  title: string;
   caption: string;
   imageId: string;
   imageUrl: URL;
@@ -54,4 +56,8 @@ export type INewUser = {
   email: string;
   username: string;
   password: string;
+};
+
+export type INewCommunity = {
+  name: string;
 };
