@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
 import FileUploader from "../shared/FileUploader";
 import { PostValidation } from "@/lib/validation";
-import { Models } from "appwrite";
 import {
   useCreatePost,
   useUpdatePost,
@@ -22,6 +21,9 @@ import {
 import { useUserContext } from "@/context/AuthContext";
 import { useToast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { AppwriteException, ID, Models } from "appwrite";
+import { appwriteConfig, databases } from "@/lib/appwrite/config";
+import { communityStore } from "@/state/communityStore";
 
 type PostFormProps = {
   post?: Models.Document;
@@ -36,10 +38,13 @@ const PostForm = ({ post, action }: PostFormProps) => {
   const { user } = useUserContext();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const communityState = communityStore();
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof PostValidation>>({
     resolver: zodResolver(PostValidation),
     defaultValues: {
+      title: post ? post?.title : "",
       caption: post ? post?.caption : "",
       file: [],
       location: post ? post?.location : "",
@@ -72,6 +77,26 @@ const PostForm = ({ post, action }: PostFormProps) => {
       });
     }
 
+    databases
+      .createDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.communityCollectionId,
+        ID.unique(),
+        {
+          name: values.title,
+        }
+      )
+      .then((res) => {
+        communityState.addCommunity(res);
+        toast({
+          title: "Community added successfully",
+        });
+      })
+      .catch((err: AppwriteException) => {
+        toast({
+          title: err.message,
+        });
+      });
     navigate("/");
   }
   return (
@@ -79,6 +104,20 @@ const PostForm = ({ post, action }: PostFormProps) => {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-9 w-full max-w-5xl">
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="shad-form_label">Title</FormLabel>
+              <FormControl>
+                <Input type="text" className="shad-input" {...field} />
+              </FormControl>
+
+              <FormMessage className="shad-form_message" />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="caption"
