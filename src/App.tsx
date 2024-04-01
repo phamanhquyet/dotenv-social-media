@@ -6,6 +6,8 @@ import SignupForm from "./_auth/forms/SignupForm";
 import RootLayout from "./_root/RootLayout";
 import {
   AllUsers,
+  ChatHome,
+  ChatSection,
   CreatePost,
   EditPost,
   Explore,
@@ -38,6 +40,8 @@ const App = () => {
           <Route path="/post/:id" element={<PostDetails />} />
           <Route path="/profile/:id/*" element={<Profile />} />
           <Route path="/update-profile/:id" element={<UpdateProfile />} />
+          <Route path="/chats" element={<ChatHome />} />
+          <Route path="/chats/:id" element={<ChatSection />} />
         </Route>
       </Routes>
 
