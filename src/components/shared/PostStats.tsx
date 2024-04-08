@@ -27,36 +27,71 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
 
   const { data: currentUser } = useGetCurrentUser();
 
-  const savedPostRecord = currentUser?.save.find(
-    (record: Models.Document) => record.post.$id === post?.$id
-  );
+  // const savedPostRecord = currentUser?.save.find(
+  //   (record: Models.Document) => record.post.$id === post?.$id
+  // );
 
+  // useEffect(() => {
+  //   setIsSaved(!!savedPostRecord); //automatic boolean assignment
+  // }, [currentUser]);
+  // const handleLikePost = (e: React.MouseEvent) => {
+  //   e.stopPropagation();
+  //   let newLikes = [...likes];
+
+  //   const hasLiked = newLikes.includes(userId);
+  //   if (hasLiked) {
+  //     newLikes = newLikes.filter((id) => id !== userId);
+  //   } else {
+  //     newLikes.push(userId);
+  //   }
+
+  //   setLikes(newLikes);
+  //   likePost({ postId: post?.$id || "", likesArray: newLikes });
+  // };
+  // const handleSavePost = (e: React.MouseEvent) => {
+  //   e.stopPropagation();
+
+  //   if (savedPostRecord) {
+  //     setIsSaved(false);
+  //     deleteSavedPost(savedPostRecord.$id);
+  //   } else {
+  //     savePost({ postId: post?.$id || "", userId });
+  //     setIsSaved(true);
+  //   }
+  // };
   useEffect(() => {
-    setIsSaved(!!savedPostRecord); //automatic boolean assignment
-  }, [currentUser]);
+    if (currentUser && post) {
+      const savedPostRecord = currentUser.save.find(
+        (record: Models.Document) => record.post?.$id === post.$id
+      );
+      setIsSaved(!!savedPostRecord); // Set boolean based on presence of savedPostRecord
+    }
+  }, [currentUser, post]);
+
   const handleLikePost = (e: React.MouseEvent) => {
     e.stopPropagation();
-    let newLikes = [...likes];
-
-    const hasLiked = newLikes.includes(userId);
-    if (hasLiked) {
-      newLikes = newLikes.filter((id) => id !== userId);
-    } else {
-      newLikes.push(userId);
-    }
-
+    const newLikes = likes.includes(userId)
+      ? likes.filter((id: string) => id !== userId)
+      : [...likes, userId];
     setLikes(newLikes);
     likePost({ postId: post?.$id || "", likesArray: newLikes });
   };
+
   const handleSavePost = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    if (savedPostRecord) {
-      setIsSaved(false);
-      deleteSavedPost(savedPostRecord.$id);
-    } else {
-      savePost({ postId: post?.$id || "", userId });
-      setIsSaved(true);
+    if (currentUser && post) {
+      const savedPostRecord = currentUser.save.find(
+        (record: Models.Document) => record.post?.$id === post.$id
+      );
+
+      if (savedPostRecord) {
+        setIsSaved(false);
+        deleteSavedPost(savedPostRecord.$id);
+      } else {
+        savePost({ postId: post.$id || "", userId });
+        setIsSaved(true);
+      }
     }
   };
   return (
