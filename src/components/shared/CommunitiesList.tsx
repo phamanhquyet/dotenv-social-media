@@ -1,16 +1,26 @@
 import { AppwriteException, Query } from "appwrite";
-import { Spinner, Card, CardBody, Button } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { communityStore } from "@/state/communityStore";
 import { appwriteConfig, databases } from "@/lib/appwrite/config";
 import { useToast } from "@/components/ui/use-toast";
+import { useUserContext } from "@/context/AuthContext";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "../ui/button";
 
 const CommunitiesList = () => {
   const [loading, setLoading] = useState(false);
   const isDataFetched = useRef(false);
   const communityState = communityStore();
   const { toast } = useToast();
+  const { user } = useUserContext();
   useEffect(() => {
     if (!isDataFetched.current) {
       setLoading(true);
@@ -18,12 +28,17 @@ const CommunitiesList = () => {
         .listDocuments(
           appwriteConfig.databaseId,
           appwriteConfig.communityCollectionId,
-          [Query.select(["$id", "name"])]
+          [Query.select(["$id", "name", "participants"])]
         )
         .then((res) => {
           console.log("The response is", res.documents);
+          console.log(user.id);
           setLoading(false);
-          communityState.addCommunities(res.documents);
+          const filteredDocuments = res.documents.filter((doc) =>
+            doc.participants.includes(user.id)
+          );
+          console.log(filteredDocuments);
+          communityState.addCommunities(filteredDocuments);
         })
         .catch((err: AppwriteException) => {
           toast({
@@ -42,19 +57,23 @@ const CommunitiesList = () => {
         {" "}
         {loading && <Spinner color="danger" />}
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+      <div className="flex flex-col">
         {communityState.communities.length > 0 &&
           communityState.communities.map((item) => (
-            <Card key={item.$id}>
-              <CardBody>
-                <h1 className="text-xl font-bold">{item["name"]}</h1>
-                <p className="py-2">Found more people in this community</p>
+            <Card key={item.$id} className="w-2/4 mt-10">
+              <CardHeader>
+                <CardTitle>{item["name"]}</CardTitle>
+                <CardDescription>
+                  Found more people in this community
+                </CardDescription>
+              </CardHeader>
+              <CardFooter className="flex justify-between">
                 <Link to={`/chats/${item.$id}`}>
-                  <Button color="danger" className="w-full">
+                  <Button className="shad-button_primary whitespace-nowrap">
                     Chat
                   </Button>
                 </Link>
-              </CardBody>
+              </CardFooter>
             </Card>
           ))}
       </div>
@@ -65,7 +84,7 @@ const CommunitiesList = () => {
           <h1 className="text-danger-400 font-bold text-2xl">
             No Community Found
           </h1>
-          <p>Be the first one to create unique community</p>
+          <p>Please join the event to connect together.</p>
         </div>
       )}
     </div>

@@ -62,10 +62,10 @@ const SigninForm = () => {
       <div className="sm:w-420 flex-center flex-col">
         <img src="/assets/images/logo_test.svg" />
         <h2 className="h3-bold md:h4-bold pt-5 sm:pt-12">
-          Đăng nhập vào tài khoản của bạn
+          Sign in to your account
         </h2>
         <p className="text-light-3 small-medium md:base-regular mt-2 ">
-          Chào mừng trở lại! Vui lòng nhập thông tin của bạn.
+          Welcome back! Please input your information.
         </p>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -88,7 +88,7 @@ const SigninForm = () => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="shad-form_label">Mật khẩu</FormLabel>
+                <FormLabel className="shad-form_label">Password</FormLabel>
                 <FormControl>
                   <Input type="password" className="shad-input" {...field} />
                 </FormControl>
@@ -100,19 +100,19 @@ const SigninForm = () => {
             {isUserLoading ? (
               <div className="flex-center gap-2">
                 <Loader />
-                Đang tải...
+                Loading...
               </div>
             ) : (
-              "Đăng nhập"
+              "Sign In"
             )}
           </Button>
 
           <p className="text-small-regular text-light-2 text-center mt-2">
-            Chưa có tài khoản?
+            Haven't got an account?
             <Link
               to="/sign-up"
               className="text-primary-500 text-small-semibold ml-1">
-              Đăng ký
+              Sign up
             </Link>
           </p>
         </form>

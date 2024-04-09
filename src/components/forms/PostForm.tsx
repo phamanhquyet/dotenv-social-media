@@ -76,7 +76,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
         title: "Please try again",
       });
     }
-
+    console.log(newPost);
     databases
       .createDocument(
         appwriteConfig.databaseId,
@@ -84,6 +84,8 @@ const PostForm = ({ post, action }: PostFormProps) => {
         ID.unique(),
         {
           name: values.title,
+          participants: [newPost?.creators.$id],
+          post: newPost?.$id,
         }
       )
       .then((res) => {
