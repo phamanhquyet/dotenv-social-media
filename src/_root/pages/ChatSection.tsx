@@ -287,8 +287,8 @@ const ChatSection = () => {
           </div>
           {/* Input Box */}
           <div className=" fixed bottom-0  w-3/4">
-            <form onSubmit={handleSubmit}>
-              <div className="flex items-center space-x-2">
+            <form onSubmit={handleSubmit} className="flex justify-center">
+              <div className="flex items-center space-x-2 w-3/4 mb-3">
                 <Input
                   type="text"
                   placeholder="Type message..."
