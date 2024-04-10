@@ -1,10 +1,11 @@
 import {
   useDeleteSavedPost,
   useGetCurrentUser,
+  useJoinEvent,
   useLikePost,
   useSavePost,
 } from "@/lib/react-query/queriesAndMutations";
-import { checkIsLiked } from "@/lib/utils";
+import { checkIsLiked, checkIsParticipated } from "@/lib/utils";
 import { AppwriteException, Models, Query } from "appwrite";
 import React, { useEffect, useState } from "react";
 import Loader from "./Loader";
@@ -23,7 +24,6 @@ import {
 import { appwriteConfig, databases } from "@/lib/appwrite/config";
 import { useToast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import { useUserContext } from "@/context/AuthContext";
 
 type PostStatsProps = {
   post?: Models.Document;
@@ -32,18 +32,21 @@ type PostStatsProps = {
 
 const PostStats = ({ post, userId }: PostStatsProps) => {
   const likesList = post?.likes.map((user: Models.Document) => user.$id);
+  const participantsList = post?.participants.map(
+    (user: Models.Document) => user.$id
+  );
 
   const [likes, setLikes] = useState(likesList);
+  const [joins, setJoins] = useState(participantsList);
   const [isSaved, setIsSaved] = useState(false);
 
   const { mutate: likePost } = useLikePost();
+  const { mutate: joinEvent } = useJoinEvent();
   const { mutate: savePost, isPending: isSavingPost } = useSavePost();
   const { mutate: deleteSavedPost, isPending: isDeletingSaved } =
     useDeleteSavedPost();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { user } = useUserContext();
-  const [isCreator, setIsCreator] = useState(user.id === post?.creators.$id);
 
   const { data: currentUser } = useGetCurrentUser();
 
@@ -80,9 +83,9 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
     }
   };
 
-  const handleJoinEvent = async () => {
+  const handleJoinEvent = async (e: React.MouseEvent) => {
     // Xử lý khi người dùng xác nhận tham gia sự kiện ở đây
-
+    e.stopPropagation();
     const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.communityCollectionId,
@@ -111,6 +114,17 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
           title: err.message,
         });
       });
+    let newJoins = [...joins];
+
+    const hasJoined = newJoins.includes(userId);
+    if (hasJoined) {
+      newJoins = newJoins.filter((id) => id !== userId);
+    } else {
+      newJoins.push(userId);
+    }
+
+    setJoins(newJoins);
+    joinEvent({ postId: post?.$id || "", joinedArray: newJoins });
     navigate("/chats");
   };
 
@@ -137,8 +151,8 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
           <AlertDialogTrigger asChild>
             <Button
               className="shad-button_primary whitespace-nowrap"
-              disabled={isCreator}>
-              {isCreator ? "Joined" : "Join the event"}
+              disabled={checkIsParticipated(joins, userId)}>
+              {checkIsParticipated(joins, userId) ? "Joined" : "Join the event"}
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>

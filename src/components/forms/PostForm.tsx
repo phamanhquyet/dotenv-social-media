@@ -99,6 +99,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
           title: err.message,
         });
       });
+
     navigate("/");
   }
   return (

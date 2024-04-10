@@ -112,6 +112,7 @@ export async function createPost(post: INewPost) {
         imageId: uploadedFile.$id,
         location: post.location,
         tags: tags,
+        participants: [post.userId],
       }
     );
     if (!newPost) {
@@ -455,6 +456,25 @@ export async function updateUser(user: IUpdateUser) {
     }
 
     return updatedUser;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function joinEvent(postId: string, joinedArray: string[]) {
+  try {
+    const updatedPost = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      postId,
+      {
+        participants: joinedArray,
+      }
+    );
+
+    if (!updatedPost) throw Error;
+
+    return updatedPost;
   } catch (error) {
     console.log(error);
   }

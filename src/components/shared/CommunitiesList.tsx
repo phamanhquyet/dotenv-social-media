@@ -28,7 +28,10 @@ const CommunitiesList = () => {
         .listDocuments(
           appwriteConfig.databaseId,
           appwriteConfig.communityCollectionId,
-          [Query.select(["$id", "name", "participants"])]
+          [
+            Query.select(["$id", "name", "participants"]),
+            Query.orderDesc("$createdAt"),
+          ]
         )
         .then((res) => {
           console.log("The response is", res.documents);
@@ -80,7 +83,7 @@ const CommunitiesList = () => {
 
       {/* If no communuty found */}
       {communityState.communities.length <= 0 && loading == false && (
-        <div className="text-center">
+        <div className="text-center flex flex-col items-center w-full">
           <h1 className="text-danger-400 font-bold text-2xl">
             No Community Found
           </h1>
