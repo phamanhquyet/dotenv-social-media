@@ -16,6 +16,7 @@ import {
   Profile,
   Saved,
   UpdateProfile,
+  ChatBot,
 } from "./_root/pages";
 import "./globals.css";
 
@@ -42,6 +43,7 @@ const App = () => {
           <Route path="/update-profile/:id" element={<UpdateProfile />} />
           <Route path="/chats" element={<ChatHome />} />
           <Route path="/chats/:id" element={<ChatSection />} />
+          <Route path="/chatbot" element={<ChatBot />} />
         </Route>
       </Routes>
 

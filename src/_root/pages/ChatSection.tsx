@@ -185,55 +185,8 @@ const ChatSection = () => {
               <p className="text-2xl">{communityName}</p>
             </div>
           </div>
-          {/* Display all messages */}
-          {/* <div className="flex-1 p-4 mb-20 overflow-y-auto">
-            {chatState.chats.length > 0 &&
-              chatState.chats.map((item) => (
-                <div
-                  className={`flex mb-2 ${
-                    item["user_id"] === user.$id
-                      ? "justify-end"
-                      : "justify-start"
-                  }`}
-                  key={item.$id}>
-                  <div
-                    className={`${
-                      item["user_id"] === user.$id
-                        ? "bg-purple-400 ml-auto"
-                        : "bg-green-400 mr-auto"
-                    } px-4 py-2 max-w-lg rounded-xl flex items-center relative`}>
-                    <div className="flex-1">
-                      <h1 className="font-bold">{item["name"]}</h1>
-                      <div className="break-all">{item["message"]}</div>
-                    </div>
-                    {item["user_id"] === user.$id && (
-                      <div className="ml-2 flex items-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="lucide lucide-trash-2 text-red-500 cursor-pointer"
-                          onClick={() => deleteMessage(item.$id)}>
-                          <path d="M3 6h18" />
-                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                          <line x1="10" x2="10" y1="11" y2="17" />
-                          <line x1="14" x2="14" y1="11" y2="17" />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            <div ref={messagesEndRef} />
-          </div> */}
-          <div className="flex-1 p-4 mb-20 overflow-y-auto">
+          {/* Chat Messages */}
+          <div className="flex-1 p-4 mb-20 overflow-y-auto custom-scrollbar">
             {chatState.chats.length > 0 ? (
               chatState.chats.map((item) => (
                 <div
@@ -246,8 +199,8 @@ const ChatSection = () => {
                   <div
                     className={`${
                       item["user_id"] === user.$id
-                        ? "bg-purple-400 ml-auto"
-                        : "bg-green-400 mr-auto"
+                        ? "bg-gray-800 ml-auto"
+                        : "bg-gray-600 mr-auto"
                     } px-4 py-2 max-w-lg rounded-xl flex items-center relative`}>
                     <div className="flex-1">
                       <h1 className="font-bold">{item["name"]}</h1>

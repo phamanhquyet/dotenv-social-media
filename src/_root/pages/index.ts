@@ -10,3 +10,4 @@ export { default as UpdateProfile } from "./UpdateProfile";
 export { default as LikedPost } from "./LikedPost";
 export { default as ChatHome } from "./ChatHome";
 export { default as ChatSection } from "./ChatSection";
+export { default as ChatBot } from "./ChatBot";
