@@ -125,7 +125,6 @@ const ChatSection = () => {
   //     });
   // };
   const fetchMessage = () => {
-    console.log(typeof id);
     setLoading(true);
     databases
       .listDocuments(
