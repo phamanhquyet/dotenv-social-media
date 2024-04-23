@@ -160,7 +160,10 @@ const ChatBot = () => {
               msg.user_id === "user" ? "bg-gray-800" : "bg-gray-600"
             } p-2 rounded-md`}>
             <strong>{msg.name}: </strong>
-            <span dangerouslySetInnerHTML={{ __html: msg.message }} />
+            <span
+              className="leading-loose"
+              dangerouslySetInnerHTML={{ __html: msg.message }}
+            />
             {msg.user_id !== "user" && ( // Sử dụng điều kiện để kiểm tra nếu user_id không phải là "user"
               <div className="pt-4 flex flex-row items-center gap-3">
                 <span>Learn more:</span>
