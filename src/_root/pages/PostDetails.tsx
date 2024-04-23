@@ -3,6 +3,7 @@ import Loader from "@/components/shared/Loader";
 import PostStats from "@/components/shared/PostStats";
 import { PostDetailsSkeleton } from "@/components/skeletons";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useUserContext } from "@/context/AuthContext";
 import {
   useDeletePost,
@@ -157,6 +158,30 @@ const PostDetails = () => {
             </div>
             <div className="w-full">
               <PostStats post={post} userId={user.id} />
+            </div>
+            <div className="w-full flex flex-row gap-2">
+              <Link
+                to={`/profile/${user.id}`}
+                className="flex gap-3 items-center h-full w-12">
+                <img
+                  src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
+                  alt="profile"
+                  className=" rounded-full"
+                />
+              </Link>
+              <Input
+                type="text"
+                placeholder="Write your comment..."
+                // onChange={(e) => setMessage(e.target.value)}
+                // value={message}
+                className="shad-input w-full"></Input>
+              <button type="submit">
+                <img
+                  src="/assets/icons/send-message.svg"
+                  alt="Send"
+                  className="h-5 w-5 invert-white"
+                />
+              </button>
             </div>
           </div>
         </div>

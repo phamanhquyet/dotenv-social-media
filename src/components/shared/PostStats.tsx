@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { appwriteConfig, databases } from "@/lib/appwrite/config";
 import { useToast } from "../ui/use-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 type PostStatsProps = {
   post?: Models.Document;
@@ -47,6 +47,8 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
     useDeleteSavedPost();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isPostsRoute = location.pathname.startsWith("/post/");
 
   const { data: currentUser } = useGetCurrentUser();
 
@@ -145,7 +147,19 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
         />
 
         <p className="small-medium lg:base-medium">{likes.length}</p>
+        {isPostsRoute ? null : (
+          <Link to={`/post/${post?.$id}`}>
+            <img
+              src="/assets/icons/chat.svg"
+              alt="like"
+              width={20}
+              height={20}
+              className="cursor-pointer ml-3"
+            />
+          </Link>
+        )}
       </div>
+
       <div className="flex gap-4">
         <AlertDialog>
           <AlertDialogTrigger asChild>
