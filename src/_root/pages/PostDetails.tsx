@@ -10,6 +10,7 @@ import {
   useGetUserPosts,
 } from "@/lib/react-query/queriesAndMutations";
 import { multiFormatDateString } from "@/lib/utils";
+import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 const PostDetails = () => {
@@ -21,10 +22,39 @@ const PostDetails = () => {
   );
   const { user } = useUserContext();
   const { mutate: deletePost } = useDeletePost();
+  const [expanded, setExpanded] = useState(false);
 
   const relatedPosts = userPosts?.documents.filter(
     (userPost) => userPost.$id !== id
   );
+
+  const renderCaption = () => {
+    if (!post?.caption) return null;
+
+    const maxLength = 51;
+    const shouldExpand = post.caption.length > maxLength;
+
+    return (
+      <div>
+        {shouldExpand ? (
+          <>
+            {expanded ? (
+              <p>{post.caption}</p>
+            ) : (
+              <p>{post.caption.slice(0, maxLength)}...</p>
+            )}
+            <Button
+              onClick={() => setExpanded(!expanded)}
+              className="hover:shad-button_primary my-3">
+              {expanded ? "Show less" : "Show more"}
+            </Button>
+          </>
+        ) : (
+          <p>{post.caption}</p>
+        )}
+      </div>
+    );
+  };
 
   const handleDeletePost = () => {
     deletePost({ postId: id, imageId: post?.imageId });
@@ -112,9 +142,9 @@ const PostDetails = () => {
               </div>
             </div>
             <hr className="border w-full border-dark-4/80" />
-            <div className="flex flex-col flex-1 w-full small-medium lg:base-regular">
+            <div className="flex flex-col flex-1 w-full small-medium lg:base-regular border-b border-dark-4/80">
               <p className="font-extrabold leading-10">{post?.title}</p>
-              <p>{post?.caption}</p>
+              {renderCaption()}
               <ul className="flex gap-1 mt-2">
                 {post?.tags.map((tag: string, index: string) => (
                   <li
