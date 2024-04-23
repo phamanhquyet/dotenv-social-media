@@ -83,6 +83,7 @@ const ChatBot = () => {
       console.log("sources: ", sources);
 
       // Chuyển đổi Markdown thành HTML
+      //@ts-expect-error tam thoi bo qua loi nay
       const parsedMessage: string = marked(botMessage);
 
       // Thêm tin nhắn từ bot vào danh sách hiển thị

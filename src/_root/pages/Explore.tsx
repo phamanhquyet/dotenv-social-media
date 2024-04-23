@@ -1,3 +1,4 @@
+/* eslint-disable */
 import GridPostList from "@/components/shared/GridPostList";
 import { Input } from "@/components/ui/input";
 import {

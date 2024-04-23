@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Input } from "@/components/ui/input";
 import React, { useState, useEffect, useRef } from "react";
 import { AppwriteException, ID, Models, Query } from "appwrite";

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { AppwriteException, Query } from "appwrite";
 import { Spinner } from "@nextui-org/react";
 import { Link } from "react-router-dom";

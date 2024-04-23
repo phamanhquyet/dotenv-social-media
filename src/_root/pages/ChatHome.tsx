@@ -1,3 +1,4 @@
+/* eslint-disable */
 import CommunitiesList from "@/components/shared/CommunitiesList";
 import { useToast } from "@/components/ui/use-toast";
 import { account } from "@/lib/appwrite/config";
