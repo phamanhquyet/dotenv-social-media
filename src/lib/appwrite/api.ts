@@ -1,6 +1,13 @@
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 import { ID, Query } from "appwrite";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
+import {
+  convertListStringsToLowerCase,
+  convertToLowerCase,
+  removeAccentsAndWhitespace,
+  removeVietnameseAccents,
+  removeWhitespace,
+} from "../utils";
 
 export async function createUserAccount(user: INewUser) {
   try {
@@ -99,6 +106,31 @@ export async function createPost(post: INewPost) {
 
     //convert tags in an array
     const tags = post.tags?.replace(/ /g, "").split(",") || [];
+    //* for search purpose
+    //convert all uppercase to lowercase
+    const convertedStrings = convertListStringsToLowerCase([
+      post.title,
+      post.caption,
+      post.location,
+    ]);
+    //remove all vietnamese accents
+    const removedAccents = removeVietnameseAccents([
+      post.title,
+      post.caption,
+      post.location,
+    ]);
+    //remove all whitespace characters
+    const removedWhitespace = removeWhitespace([
+      post.title,
+      post.caption,
+      post.location,
+    ]);
+    //remove all accents and whitespace
+    const removedAccentsAndWhitespace = removeAccentsAndWhitespace([
+      post.title,
+      post.caption,
+      post.location,
+    ]);
     //save post to database
     const newPost = await databases.createDocument(
       appwriteConfig.databaseId,
@@ -113,6 +145,13 @@ export async function createPost(post: INewPost) {
         location: post.location,
         tags: tags,
         participants: [post.userId],
+        search: [
+          ...convertedStrings,
+          ...tags,
+          ...removedAccents,
+          ...removedWhitespace,
+          ...removedAccentsAndWhitespace,
+        ],
       }
     );
     if (!newPost) {
@@ -270,6 +309,31 @@ export async function updatePost(post: IUpdatePost) {
 
     //convert tags in an array
     const tags = post.tags?.replace(/ /g, "").split(",") || [];
+    //* for search purpose
+    //convert all uppercase to lowercase
+    const convertedStrings = convertListStringsToLowerCase([
+      post.title,
+      post.caption,
+      post.location,
+    ]);
+    //remove all vietnamese accents
+    const removedAccents = removeVietnameseAccents([
+      post.title,
+      post.caption,
+      post.location,
+    ]);
+    //remove all whitespace characters
+    const removedWhitespace = removeWhitespace([
+      post.title,
+      post.caption,
+      post.location,
+    ]);
+    //remove all accents and whitespace
+    const removedAccentsAndWhitespace = removeAccentsAndWhitespace([
+      post.title,
+      post.caption,
+      post.location,
+    ]);
     //save post to database
     const updatedPost = await databases.updateDocument(
       appwriteConfig.databaseId,
@@ -282,8 +346,16 @@ export async function updatePost(post: IUpdatePost) {
         imageId: image.imageId,
         location: post.location,
         tags: tags,
+        search: [
+          ...convertedStrings,
+          ...tags,
+          ...removedAccents,
+          ...removedWhitespace,
+          ...removedAccentsAndWhitespace,
+        ],
       }
     );
+
     if (!updatedPost) {
       await deleteFile(post.imageId);
       throw Error;
@@ -335,10 +407,11 @@ export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
 
 export async function searchPosts(searchTerm: string) {
   try {
+    const convertedSearchTerm = convertToLowerCase(searchTerm);
     const posts = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.postCollectionId,
-      [Query.search("caption", searchTerm)]
+      [Query.search("search", convertedSearchTerm)]
     );
     if (!posts) throw Error;
 
@@ -393,7 +466,7 @@ export async function getUserPosts(userId?: string) {
     const post = await databases.listDocuments(
       appwriteConfig.databaseId,
       appwriteConfig.postCollectionId,
-      [Query.equal("creator", userId), Query.orderDesc("$createdAt")]
+      [Query.equal("creators", userId), Query.orderDesc("$createdAt")]
     );
 
     if (!post) throw Error;
