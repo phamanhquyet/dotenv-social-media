@@ -3,6 +3,7 @@ import { multiFormatDateString } from "@/lib/utils";
 import { Models } from "appwrite";
 import { Link } from "react-router-dom";
 import PostStats from "./PostStats";
+import PostCaption from "./PostCaption";
 //import { cp } from "fs";
 
 type PostCardProps = {
@@ -50,7 +51,7 @@ const PostCard = ({ post }: PostCardProps) => {
       <Link to={`/post/${post.$id}`}>
         <div className="small-medium lg:base-medium py-5">
           <p className="font-extrabold leading-10">{post.title}</p>
-          <p>{post.caption}</p>
+          <PostCaption paragraph={post.caption} />
           <ul className="flex gap-1 mt-2">
             {post.tags.map((tag: string) => (
               <li key={tag} className="text-light-3">
