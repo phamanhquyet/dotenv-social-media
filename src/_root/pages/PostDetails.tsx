@@ -1,17 +1,34 @@
+/* eslint-disable */
 import GridPostList from "@/components/shared/GridPostList";
 import Loader from "@/components/shared/Loader";
+import PostCaption from "@/components/shared/PostCaption";
 import PostStats from "@/components/shared/PostStats";
 import { PostDetailsSkeleton } from "@/components/skeletons";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import { useUserContext } from "@/context/AuthContext";
+import { appwriteConfig, client, databases } from "@/lib/appwrite/config";
 import {
   useDeletePost,
   useGetPostById,
   useGetUserPosts,
 } from "@/lib/react-query/queriesAndMutations";
 import { multiFormatDateString } from "@/lib/utils";
-import { useState } from "react";
+import { commentStore } from "@/state/commentsState";
+import { AppwriteException, ID, Models, Query } from "appwrite";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 const PostDetails = () => {
@@ -24,6 +41,11 @@ const PostDetails = () => {
   const { user } = useUserContext();
   const { mutate: deletePost } = useDeletePost();
   const [expanded, setExpanded] = useState(false);
+  const [comment, setComment] = useState("");
+  const commentState = commentStore();
+  const { toast } = useToast();
+  const isFetched = useRef(false);
+  const [loading, setLoading] = useState(false);
 
   const relatedPosts = userPosts?.documents.filter(
     (userPost) => userPost.$id !== id
@@ -40,9 +62,12 @@ const PostDetails = () => {
         {shouldExpand ? (
           <>
             {expanded ? (
-              <p>{post.caption}</p>
+              <PostCaption paragraph={post.caption} />
             ) : (
-              <p>{post.caption.slice(0, maxLength)}...</p>
+              <>
+                <PostCaption paragraph={post.caption.slice(0, maxLength)} />
+                <p>...</p>
+              </>
             )}
             <Button
               onClick={() => setExpanded(!expanded)}
@@ -58,8 +83,95 @@ const PostDetails = () => {
   };
 
   const handleDeletePost = () => {
-    deletePost({ postId: id, imageId: post?.imageId });
+    const message = deletePost({ postId: id, imageId: post?.imageId });
+    if (message !== undefined) {
+      toast({
+        title: "Delete Post Successfully",
+      });
+    }
     navigate(-1);
+  };
+
+  useEffect(() => {
+    if (!isFetched.current) {
+      fetchComments();
+
+      //   * For Realtime Things
+      client.subscribe(
+        `databases.${appwriteConfig.databaseId}.collections.${appwriteConfig.commentCollectionId}.documents`,
+        (response) => {
+          console.log("The realtime response is ", response);
+          const payload = response.payload as Models.Document;
+
+          //   * If It's new comment
+          if (
+            response.events.includes(
+              "databases.*.collections.*.documents.*.create"
+            )
+          ) {
+            if (user.id !== payload["user_id"]) {
+              commentState.addComment(payload);
+            }
+          } else if (
+            response.events.includes(
+              "databases.*.collections.*.documents.*.delete"
+            )
+          ) {
+            commentState.deleteComment(payload.$id);
+          }
+        }
+      );
+
+      isFetched.current = true;
+    }
+  }, []);
+
+  // * To handle submit
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    databases
+      .createDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.commentCollectionId,
+        ID.unique(),
+        {
+          comment: comment,
+          user_id: user.id,
+          post_id: id,
+          name: user.name,
+          imageUrl: user.imageUrl,
+        }
+      )
+      .then((res) => {
+        commentState.addComment(res);
+        setComment("");
+      })
+      .catch((err: AppwriteException) => {
+        toast({
+          title: err.message,
+        });
+      });
+  };
+
+  const fetchComments = () => {
+    setLoading(true);
+    databases
+      .listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.commentCollectionId,
+        id ? [Query.equal("post_id", id)] : []
+      )
+      .then((res) => {
+        setLoading(false);
+        commentState.addComments(res.documents);
+      })
+      .catch((err: AppwriteException) => {
+        setLoading(false);
+        toast({
+          title: err.message,
+        });
+      });
   };
   return (
     <div className="post_details-container">
@@ -93,7 +205,7 @@ const PostDetails = () => {
                 className="flex items-center gap-3">
                 <img
                   src={
-                    post?.creators?.imageUrl ||
+                    post?.creators?.imageUrls ||
                     "/assets/icons/profile-placeholder.svg"
                   }
                   alt="creator"
@@ -127,26 +239,45 @@ const PostDetails = () => {
                     height={24}
                   />
                 </Link>
-                <Button
-                  onClick={handleDeletePost}
-                  variant="ghost"
-                  className={`ghost_details-delete_btn ${
-                    user.id !== post?.creators.$id && "hidden"
-                  }`}>
-                  <img
-                    src="/assets/icons/delete.svg"
-                    alt="delete"
-                    width={24}
-                    height={24}
-                  />
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className={`ghost_details-delete_btn ${
+                        user.id !== post?.creators.$id && "hidden"
+                      }`}>
+                      <img
+                        src="/assets/icons/delete.svg"
+                        alt="delete"
+                        width={24}
+                        height={24}
+                      />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Confirmination</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete in this post?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        className="shad-button_primary whitespace-nowrap"
+                        onClick={handleDeletePost}>
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </div>
             <hr className="border w-full border-dark-4/80" />
             <div className="flex flex-col flex-1 w-full small-medium lg:base-regular border-b border-dark-4/80">
               <p className="font-extrabold leading-10">{post?.title}</p>
               {renderCaption()}
-              <ul className="flex gap-1 mt-2">
+              <ul className="flex gap-1 my-2">
                 {post?.tags.map((tag: string, index: string) => (
                   <li
                     key={`${tag}${index}`}
@@ -156,10 +287,50 @@ const PostDetails = () => {
                 ))}
               </ul>
             </div>
+            <div className="flex-1 p-4 overflow-y-auto custom-scrollbar w-full max-h-96">
+              {commentState.comments.length > 0 ? (
+                commentState.comments.map((item) => (
+                  <div className="flex mb-5 justify-start" key={item.$id}>
+                    <div className="mr-auto max-w-lg rounded-xl flex items-center relative gap-3">
+                      <Link
+                        to={`/profile/${item["user_id"]}`}
+                        className="flex gap-3 items-center h-full w-9">
+                        <img
+                          src={
+                            item["imageUrl"] ||
+                            "/assets/icons/profile-placeholder.svg"
+                          }
+                          alt="profile"
+                          className=" rounded-full"
+                        />
+                      </Link>
+                      <div className="flex flex-col">
+                        <div className="flex flex-row gap-3">
+                          <h1 className="font-bold text-light-3" >{item["name"]}</h1>
+                          <div className="break-all">{item["comment"]}</div>
+                        </div>
+                        <div className="text-light-4">
+                          <p className="subtle-semibold lg:small-regular ">
+                            {multiFormatDateString(item["$createdAt"])}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center text-gray-500">
+                  Let's comment something
+                </div>
+              )}
+            </div>
+            <div className="text-center"> {loading && <Loader />}</div>
             <div className="w-full">
               <PostStats post={post} userId={user.id} />
             </div>
-            <div className="w-full flex flex-row gap-2">
+            <form
+              onSubmit={handleSubmit}
+              className="w-full flex flex-row gap-2">
               <Link
                 to={`/profile/${user.id}`}
                 className="flex gap-3 items-center h-full w-12">
@@ -169,11 +340,12 @@ const PostDetails = () => {
                   className=" rounded-full"
                 />
               </Link>
+
               <Input
                 type="text"
                 placeholder="Write your comment..."
-                // onChange={(e) => setMessage(e.target.value)}
-                // value={message}
+                onChange={(e) => setComment(e.target.value)}
+                value={comment}
                 className="shad-input w-full"></Input>
               <button type="submit">
                 <img
@@ -182,7 +354,7 @@ const PostDetails = () => {
                   className="h-5 w-5 invert-white"
                 />
               </button>
-            </div>
+            </form>
           </div>
         </div>
       )}
