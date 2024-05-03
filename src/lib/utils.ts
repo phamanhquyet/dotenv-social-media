@@ -68,7 +68,7 @@ export const convertToLowerCase = (input: string): string => {
   return input.toLowerCase();
 };
 
-export const convertListStringsToLowerCase = (inputArray: (string | undefined)[]): string[] => {
+export const convertListStringsToLowerCase = (inputArray: (string | undefined)[]): string => {
   const processedStrings: string[] = [];
 
   for (const str of inputArray) {
@@ -78,10 +78,10 @@ export const convertListStringsToLowerCase = (inputArray: (string | undefined)[]
     }
   }
 
-  return processedStrings;
+  return processedStrings.join('');
 };
 
-export const removeVietnameseAccents = (inputArray: (string | undefined)[]): string[] => {
+export const removeVietnameseAccents = (inputArray: (string | undefined)[]): string => {
   const processedArray: string[] = [];
 
   for (const str of inputArray) {
@@ -94,10 +94,10 @@ export const removeVietnameseAccents = (inputArray: (string | undefined)[]): str
     }
   }
 
-  return processedArray;
+  return processedArray.join('');
 };
 
-export const removeWhitespace = (strings: (string | undefined)[]): string[] => {
+export const removeWhitespace = (strings: (string | undefined)[]): string => {
   const processedStrings: string[] = [];
 
   for (const str of strings) {
@@ -110,10 +110,10 @@ export const removeWhitespace = (strings: (string | undefined)[]): string[] => {
     }
   }
 
-  return processedStrings;
+  return processedStrings.join('');
 };
 
-export const removeAccentsAndWhitespace = (inputArray: (string | undefined)[]): string[] => {
+export const removeAccentsAndWhitespace = (inputArray: (string | undefined)[]): string => {
   const processedStrings: string[] = [];
 
   for (const str of inputArray) {
@@ -131,5 +131,5 @@ export const removeAccentsAndWhitespace = (inputArray: (string | undefined)[]): 
     }
   }
 
-  return processedStrings;
+  return processedStrings.join('');
 };

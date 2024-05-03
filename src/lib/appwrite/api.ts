@@ -4,9 +4,7 @@ import { account, appwriteConfig, avatars, databases, storage } from "./config";
 import {
   convertListStringsToLowerCase,
   convertToLowerCase,
-  removeAccentsAndWhitespace,
   removeVietnameseAccents,
-  removeWhitespace,
 } from "../utils";
 
 export async function createUserAccount(user: INewUser) {
@@ -119,18 +117,12 @@ export async function createPost(post: INewPost) {
       post.caption,
       post.location,
     ]);
-    //remove all whitespace characters
-    const removedWhitespace = removeWhitespace([
-      post.title,
-      post.caption,
-      post.location,
-    ]);
-    //remove all accents and whitespace
-    const removedAccentsAndWhitespace = removeAccentsAndWhitespace([
-      post.title,
-      post.caption,
-      post.location,
-    ]);
+
+    const searchString = convertedStrings.concat(
+      " ",
+      removedAccents,
+      tags.join("")
+    );
     //save post to database
     const newPost = await databases.createDocument(
       appwriteConfig.databaseId,
@@ -145,13 +137,7 @@ export async function createPost(post: INewPost) {
         location: post.location,
         tags: tags,
         participants: [post.userId],
-        search: [
-          ...convertedStrings,
-          ...tags,
-          ...removedAccents,
-          ...removedWhitespace,
-          ...removedAccentsAndWhitespace,
-        ],
+        search: searchString,
       }
     );
     if (!newPost) {
@@ -322,18 +308,11 @@ export async function updatePost(post: IUpdatePost) {
       post.caption,
       post.location,
     ]);
-    //remove all whitespace characters
-    const removedWhitespace = removeWhitespace([
-      post.title,
-      post.caption,
-      post.location,
-    ]);
-    //remove all accents and whitespace
-    const removedAccentsAndWhitespace = removeAccentsAndWhitespace([
-      post.title,
-      post.caption,
-      post.location,
-    ]);
+    const searchString = convertedStrings.concat(
+      " ",
+      removedAccents,
+      tags.join("")
+    );
     //save post to database
     const updatedPost = await databases.updateDocument(
       appwriteConfig.databaseId,
@@ -346,13 +325,7 @@ export async function updatePost(post: IUpdatePost) {
         imageId: image.imageId,
         location: post.location,
         tags: tags,
-        search: [
-          ...convertedStrings,
-          ...tags,
-          ...removedAccents,
-          ...removedWhitespace,
-          ...removedAccentsAndWhitespace,
-        ],
+        search: searchString,
       }
     );
 
