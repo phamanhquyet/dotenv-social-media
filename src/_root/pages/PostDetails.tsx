@@ -46,6 +46,7 @@ const PostDetails = () => {
   const { toast } = useToast();
   const isFetched = useRef(false);
   const [loading, setLoading] = useState(false);
+  const [inputDisabled, setInputDisabled] = useState(false);
 
   const relatedPosts = userPosts?.documents.filter(
     (userPost) => userPost.$id !== id
@@ -130,6 +131,9 @@ const PostDetails = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
+    setComment("");
+    setInputDisabled(true);
+
     databases
       .createDocument(
         appwriteConfig.databaseId,
@@ -152,6 +156,8 @@ const PostDetails = () => {
           title: err.message,
         });
       });
+
+      setInputDisabled(false);
   };
 
   const fetchComments = () => {
@@ -346,7 +352,8 @@ const PostDetails = () => {
                 placeholder="Write your comment..."
                 onChange={(e) => setComment(e.target.value)}
                 value={comment}
-                className="shad-input w-full"></Input>
+                className="shad-input w-full"
+                disabled={inputDisabled}></Input>
               <button type="submit">
                 <img
                   src="/assets/icons/send-message.svg"
