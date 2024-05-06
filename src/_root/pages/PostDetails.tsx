@@ -3,7 +3,7 @@ import GridPostList from "@/components/shared/GridPostList";
 import Loader from "@/components/shared/Loader";
 import PostCaption from "@/components/shared/PostCaption";
 import PostStats from "@/components/shared/PostStats";
-import { PostDetailsSkeleton } from "@/components/skeletons";
+import { GridPostsSkeleton, PostDetailsSkeleton } from "@/components/skeletons";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -211,7 +211,7 @@ const PostDetails = () => {
                 className="flex items-center gap-3">
                 <img
                   src={
-                    post?.creators?.imageUrls ||
+                    post?.creators?.imageUrl ||
                     "/assets/icons/profile-placeholder.svg"
                   }
                   alt="creator"
@@ -373,7 +373,7 @@ const PostDetails = () => {
           More Related Posts
         </h3>
         {isUserPostLoading || !relatedPosts ? (
-          <Loader />
+          <GridPostsSkeleton />
         ) : (
           <GridPostList posts={relatedPosts} />
         )}

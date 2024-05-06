@@ -7,7 +7,6 @@ import {
 } from "@/lib/react-query/queriesAndMutations";
 import { useEffect, useState } from "react";
 import useDebounce from "../hooks/useDebounce";
-import Loader from "@/components/shared/Loader";
 import { useInView } from "react-intersection-observer";
 import { ExploreSkeleton, GridPostsSkeleton } from "@/components/skeletons";
 
@@ -47,7 +46,7 @@ const Explore = () => {
   if (!posts) {
     return (
       <div className="flex-center w-full h-full">
-        <Loader />
+        <ExploreSkeleton />
       </div>
     );
   }
@@ -109,7 +108,7 @@ const Explore = () => {
       </div>
       {hasNextPage && !searchValue && (
         <div ref={ref} className="mt-10">
-          <Loader />
+          <ExploreSkeleton />
         </div>
       )}
     </div>

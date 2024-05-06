@@ -11,7 +11,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import LikedPosts from "./LikedPost";
-import { ProfileDetailSkeleton } from "@/components/skeletons";
+import Loader from "@/components/shared/Loader";
 
 interface StatBlockProps {
   value: string | number;
@@ -35,7 +35,7 @@ const Profile = () => {
   if (!currentUser)
     return (
       <div className="flex-center w-full h-full">
-        <ProfileDetailSkeleton />
+        <Loader />
       </div>
     );
 

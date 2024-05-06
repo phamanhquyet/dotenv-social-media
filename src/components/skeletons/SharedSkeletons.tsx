@@ -4,11 +4,11 @@ export const PostStatsSkeleton = () => {
   return (
     <div className="flex justify-between items-center z-20">
       <div className="flex gap-2 mr-2">
-        <Skeleton className="w-6 h-6" />
+        <Skeleton className="w-6 h-6 bg-zinc-600" />
       </div>
 
       <div className="flex gap-2">
-        <Skeleton className="w-6 h-6" />
+        <Skeleton className="w-6 h-6 bg-zinc-600" />
       </div>
     </div>
   );
@@ -31,15 +31,15 @@ export const GridPostsSkeleton = ({
           className="relative min-w-80 h-80">
           {/* Image Sec */}
           <div className="grid-post_link">
-            <Skeleton className="h-full w-full object-cover" />
+            <Skeleton className="h-full w-full object-cover bg-zinc-600" />
           </div>
 
           {/* User Sec & Stats Sec */}
           <div className="grid-post_user">
             {showUser && (
               <div className="flex items-center justify-start gap-2 flex-1">
-                <Skeleton className="h-8 w-8 rounded-full" />
-                <Skeleton className="h-6 w-20" />
+                <Skeleton className="h-8 w-8 rounded-full bg-zinc-600" />
+                <Skeleton className="h-6 w-20 bg-zinc-600" />
               </div>
             )}
 
