@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { AppwriteException, ID, Models } from "appwrite";
 import { appwriteConfig, databases } from "@/lib/appwrite/config";
 import { communityStore } from "@/state/communityStore";
+import axios from "axios";
 
 type PostFormProps = {
   post?: Models.Document;
@@ -54,6 +55,26 @@ const PostForm = ({ post, action }: PostFormProps) => {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof PostValidation>) {
+    const response = await axios.post(
+      "http://localhost:3000/api/check-caption",
+      {
+        caption: form.getValues().caption,
+      }
+    );
+
+    // Check if the caption is valid
+    if (!response.data.validCaption) {
+      console.log(
+        `Contains invalid words: ${response.data.invalidWords.join(", ")}`
+      );
+      return toast({
+        title: "Invalid caption",
+        description: `Contains invalid words: ${response.data.invalidWords
+          .map((word) => word[1].join(", "))
+          .join(", ")}`,
+      });
+    }
+
     if (post && action === "Update") {
       const updatedPost = await updatePost({
         ...values,
