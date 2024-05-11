@@ -56,7 +56,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof PostValidation>) {
     const response = await axios.post(
-      "http://localhost:3000/api/check-caption",
+      "https://dotenv-api-lilac.vercel.app/api/check-caption",
       {
         caption: form.getValues().caption,
       }
