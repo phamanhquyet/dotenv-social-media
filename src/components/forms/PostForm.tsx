@@ -70,6 +70,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
       return toast({
         title: "Invalid caption",
         description: `Contains invalid words: ${response.data.invalidWords
+          //@ts-expect-error tam thoi bo qua loi nay
           .map((word) => word[1].join(", "))
           .join(", ")}`,
       });
