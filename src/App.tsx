@@ -18,6 +18,7 @@ import {
   UpdateProfile,
   ChatBot,
   NotFound,
+  PlanBoard,
 } from "./_root/pages";
 import "./globals.css";
 
@@ -45,6 +46,7 @@ const App = () => {
           <Route path="/chats" element={<ChatHome />} />
           <Route path="/chats/:id" element={<ChatSection />} />
           <Route path="/chatbot" element={<ChatBot />} />
+          <Route path="/plan" element={<PlanBoard />} />
         </Route>
 
         {/* 404 Route */}

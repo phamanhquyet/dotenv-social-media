@@ -12,3 +12,4 @@ export { default as ChatHome } from "./ChatHome";
 export { default as ChatSection } from "./ChatSection";
 export { default as ChatBot } from "./ChatBot";
 export { default as NotFound } from "./NotFound";
+export { default as PlanBoard } from "./PlanBoard";
