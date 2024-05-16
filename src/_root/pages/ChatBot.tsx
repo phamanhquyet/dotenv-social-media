@@ -35,7 +35,20 @@ const ChatBot = () => {
   const [inputDisabled, setInputDisabled] = useState(false);
   const [dots, setDots] = useState("");
   const [conversationId, setConversationId] = useState(null);
-  const [greetings, setGreetings] = useState(false);
+  const [greetings, setGreetings] = useState(true);
+
+  const suggestedQuestions = [
+    {
+      id: 1,
+      text: "Hãy cho tôi biết cách để tái chế chai nhựa đã qua sử dụng",
+    },
+    { id: 2, text: "Nguyên nhân chính gây ra biến đổi khí hậu là gì?" },
+    {
+      id: 3,
+      text: "Lợi ích của năng lượng tái tạo so với nhiên liệu hóa thạch là gì?",
+    },
+    // Add more questions as needed
+  ];
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -119,7 +132,7 @@ const ChatBot = () => {
     // Xóa nội dung tin nhắn sau khi gửi
     setMessage("");
     setInputDisabled(true);
-    setGreetings(true);
+    setGreetings(false);
 
     // Gửi tin nhắn từ người dùng và lấy tin nhắn từ bot
     if (message.trim() !== "") {
@@ -155,9 +168,13 @@ const ChatBot = () => {
     }
   };
 
+  const handleSuggestedQuestion = (suggestedMessage: string) => {
+    setMessage(suggestedMessage);
+  };
+
   return (
     <div className="flex flex-col h-screen justify-between p-4 w-full">
-      {!greetings ? (
+      {greetings ? (
         <div className="flex h-full flex-1 items-center justify-center mb-60 ">
           <div className=" flex flex-col items-center justify-center mb-64">
             <img
@@ -169,7 +186,19 @@ const ChatBot = () => {
             <h2 className="my-10 text-2xl font-medium">
               How can I help you today?
             </h2>
-            <p className="text-light-3 small-medium md:base-regular mt-2">Give me a question and we'll blow your mind</p>
+            <p className="text-light-3 small-medium md:base-regular mt-2">
+              Give me a question and we'll blow your mind
+            </p>
+            <div className="mt-4">
+              {suggestedQuestions.map((question) => (
+                <button
+                  key={question.id}
+                  onClick={() => handleSuggestedQuestion(question.text)}
+                  className="bg-gray-200 hover:bg-gray-300 text-black font-semibold py-2 px-4 rounded shadow m-2">
+                  {question.text}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       ) : (
