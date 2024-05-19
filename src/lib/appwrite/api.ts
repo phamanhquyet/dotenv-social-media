@@ -507,14 +507,15 @@ export async function updateUser(user: IUpdateUser) {
   }
 }
 
-export async function joinEvent(postId: string, joinedArray: string[]) {
+export async function joinEvent(postId: string, userId: string) {
   try {
-    const updatedPost = await databases.updateDocument(
+    const updatedPost = await databases.createDocument(
       appwriteConfig.databaseId,
-      appwriteConfig.postCollectionId,
-      postId,
+      appwriteConfig.participantCollectionId,
+      ID.unique(),
       {
-        participants: joinedArray,
+        user: userId, 
+        post: postId
       }
     );
 
@@ -525,3 +526,4 @@ export async function joinEvent(postId: string, joinedArray: string[]) {
     console.log(error);
   }
 }
+

@@ -240,11 +240,11 @@ export const useJoinEvent = () => {
   return useMutation({
     mutationFn: ({
       postId,
-      joinedArray,
+      userId,
     }: {
       postId: string;
-      joinedArray: string[];
-    }) => joinEvent(postId, joinedArray),
+      userId: string;
+    }) => joinEvent(postId, userId),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_POST_BY_ID, data?.$id],

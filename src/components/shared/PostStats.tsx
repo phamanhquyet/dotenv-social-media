@@ -34,7 +34,7 @@ type PostStatsProps = {
 const PostStats = ({ post, userId }: PostStatsProps) => {
   const likesList = post?.likes.map((user: Models.Document) => user.$id);
   const participantsList = post?.participants.map(
-    (user: Models.Document) => user.$id
+    (user: Models.Document) => user.user.$id
   );
 
   const [likes, setLikes] = useState(likesList);
@@ -127,7 +127,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
     }
 
     setJoins(newJoins);
-    joinEvent({ postId: post?.$id || "", joinedArray: newJoins });
+    joinEvent({ postId: post?.$id || "", userId: userId });
     navigate("/chats");
   };
 

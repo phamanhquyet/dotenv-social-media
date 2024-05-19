@@ -300,14 +300,14 @@ const PostDetails = () => {
                     <div className="mr-auto max-w-lg rounded-xl flex items-center relative gap-3">
                       <Link
                         to={`/profile/${item["user_id"]}`}
-                        className="flex gap-3 items-center h-full w-9">
+                        className="flex items-center gap-3">
                         <img
                           src={
                             item["imageUrl"] ||
                             "/assets/icons/profile-placeholder.svg"
                           }
                           alt="profile"
-                          className=" rounded-full"
+                          className="rounded-full w-6 h-6 lg:w-10 lg:h-10"
                         />
                       </Link>
                       <div className="flex flex-col">
@@ -336,14 +336,14 @@ const PostDetails = () => {
             </div>
             <form
               onSubmit={handleSubmit}
-              className="w-full flex flex-row gap-2">
+              className="w-full flex flex-row justify-between">
               <Link
                 to={`/profile/${user.id}`}
-                className="flex gap-3 items-center h-full w-12">
+                className="flex items-center gap-3">
                 <img
                   src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
                   alt="profile"
-                  className=" rounded-full"
+                  className="rounded-full w-6 h-6 lg:w-8 lg:h-8"
                 />
               </Link>
 
@@ -352,7 +352,7 @@ const PostDetails = () => {
                 placeholder="Write your comment..."
                 onChange={(e) => setComment(e.target.value)}
                 value={comment}
-                className="shad-input w-full"
+                className="shad-input w-[87%]"
                 disabled={inputDisabled}></Input>
               <button type="submit">
                 <img

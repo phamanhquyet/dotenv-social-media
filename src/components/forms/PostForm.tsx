@@ -121,6 +121,23 @@ const PostForm = ({ post, action }: PostFormProps) => {
           title: err.message,
         });
       });
+      console.log(newPost?.creators.$id);
+      console.log( newPost?.$id);
+      // create participant
+      databases.createDocument(
+        appwriteConfig.databaseId,
+        appwriteConfig.participantCollectionId,
+        ID.unique(),
+        { user: newPost?.creators.$id, post: newPost?.$id }
+      ).then((res) => {
+        console.log(res);
+      })
+      .catch((err: AppwriteException) => {
+        toast({
+          title: err.message,
+        });
+      });
+
 
     navigate("/");
   }
