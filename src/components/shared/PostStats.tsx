@@ -33,9 +33,17 @@ type PostStatsProps = {
 
 const PostStats = ({ post, userId }: PostStatsProps) => {
   const likesList = post?.likes.map((user: Models.Document) => user.$id);
-  const participantsList = post?.participants.map(
-    (user: Models.Document) => user.user.$id
-  );
+  const { pathname } = useLocation();
+  let participantsList = [];
+
+  const isProfileRoute = pathname.startsWith("/profile/");
+  if (isProfileRoute) {
+    participantsList = post?.community.participants
+  } else {
+    participantsList = post?.participants.map(
+      (user: Models.Document) => user?.user?.$id
+    );
+  }
 
   const [likes, setLikes] = useState(likesList);
   const [joins, setJoins] = useState(participantsList);
