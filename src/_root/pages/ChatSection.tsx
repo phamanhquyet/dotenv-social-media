@@ -186,7 +186,7 @@ const ChatSection = () => {
             </div>
           </div>
           {/* Chat Messages */}
-          <div className="flex-1 p-4 mb-20 overflow-y-auto custom-scrollbar">
+          <div className="flex-1 p-4 overflow-y-auto custom-scrollbar lg:mb-20">
             {chatState.chats.length > 0 ? (
               chatState.chats.map((item) => (
                 <div
@@ -239,7 +239,7 @@ const ChatSection = () => {
             <div ref={messagesEndRef} />
           </div>
           {/* Input Box */}
-          <div className=" fixed bottom-0  w-3/4">
+          <div className="fixed bottom-0 w-full sm:w-3/4 top-[85%] sm:top-auto custom-scrollbar">
             <form onSubmit={handleSubmit} className="flex justify-center">
               <div className="flex items-center space-x-2 w-3/4 mb-3">
                 <Input

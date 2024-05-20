@@ -261,7 +261,7 @@ const ChatBot = () => {
       )}
 
       {/* Input Box */}
-      <div className=" fixed bottom-0  w-3/4">
+      <div className=" fixed bottom-0 w-full sm:w-3/4 top-[85%] sm:top-auto">
         <form onSubmit={handleSubmit} className="flex justify-center">
           <div className="flex items-center space-x-2 w-3/4 mb-3">
             <Input
