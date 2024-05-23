@@ -40,14 +40,25 @@ const ChatBot = () => {
   const suggestedQuestions = [
     {
       id: 1,
-      text: "Hãy cho tôi biết cách để tái chế chai nhựa đã qua sử dụng",
+      text: "Tái chế đồ thủy tinh đã qua sử dụng",
+      prompt:
+        "Hãy cho tôi biết cách để tái chế chai thủy tinh đã qua sử dụng",
     },
-    { id: 2, text: "Nguyên nhân chính gây ra biến đổi khí hậu là gì?" },
+    {
+      id: 2,
+      text: "Tái chế đồ nhựa đã qua sử dụng",
+      prompt: "Tái chế đồ thủy tinh đã qua sử dụng",
+    },
     {
       id: 3,
-      text: "Lợi ích của năng lượng tái tạo so với nhiên liệu hóa thạch là gì?",
+      text: "Lên kế hoạch dọn dẹp môi trường sống",
+      prompt: "Bạn là một chuyên gia quản lý môi trường sáng tạo, hiểu rõ tầm quan trọng của việc duy trì không gian sống sạch sẽ và bền vững. Hãy lên kế hoạch cho một sự kiện dọn dẹp cộng đồng lớn, bao gồm các hoạt động như phân loại rác, tái chế và các giải pháp xử lý rác thải hiệu quả. Trong kế hoạch của bạn, hãy bao gồm các chiến lược để thu hút và duy trì sự tham gia của cộng đồng, cũng như cách thức đo lường thành công của sự kiện. Vận dụng kỹ năng giao tiếp và sự sáng tạo của bạn để làm nổi bật các điểm then chốt và thuyết phục mọi người tham gia vào sự kiện này. Sử dụng ngôn từ hấp dẫn và thú vị để khắc sâu thông điệp bảo vệ môi trường vào tâm trí người tham gia.",
     },
-    // Add more questions as needed
+    {
+      id: 4,
+      text: "Xử lý rác sinh hoạt",
+      prompt: "Bạn là một chuyên gia về quản lý chất thải, am hiểu sâu rộng về các phương pháp xử lý rác sinh hoạt hiện đại. Hãy mô tả các chiến lược và công nghệ tiên tiến trong việc quản lý và xử lý rác sinh hoạt, bao gồm phân loại tại nguồn, tái chế, phân hủy sinh học và đốt rác để sản xuất năng lượng. Đề cập đến các thách thức và cơ hội trong việc triển khai các giải pháp này tại các đô thị lớn. Sử dụng kiến thức của bạn để thuyết phục các nhà hoạch định chính sách và cộng đồng về tầm quan trọng của việc áp dụng các phương pháp xử lý rác sinh hoạt hiệu quả để bảo vệ môi trường và nâng cao chất lượng sống.",
+    }
   ];
 
   useEffect(() => {
@@ -193,7 +204,7 @@ const ChatBot = () => {
               {suggestedQuestions.map((question) => (
                 <button
                   key={question.id}
-                  onClick={() => handleSuggestedQuestion(question.text)}
+                  onClick={() => handleSuggestedQuestion(question.prompt)}
                   className="bg-gray-200 hover:bg-gray-300 text-black font-semibold py-2 px-4 rounded shadow m-2">
                   {question.text}
                 </button>
