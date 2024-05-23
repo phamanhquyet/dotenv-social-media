@@ -61,10 +61,10 @@ const CommunitiesList = () => {
         {" "}
         {loading && <Spinner color="danger" />}
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-wrap gap-2">
         {communityState.communities.length > 0 &&
           communityState.communities.map((item) => (
-            <Card key={item.$id} className="w-2/4 mt-10">
+            <Card key={item.$id} className="mt-10 min-w-[45%]">
               <CardHeader>
                 <CardTitle>{item["name"]}</CardTitle>
                 <CardDescription>
@@ -72,8 +72,8 @@ const CommunitiesList = () => {
                 </CardDescription>
               </CardHeader>
               <CardFooter className="flex justify-between">
-                <Link to={`/chats/${item.$id}`}>
-                  <Button className="shad-button_primary whitespace-nowrap">
+                <Link to={`/chats/${item.$id}`} className="w-full">
+                  <Button className="shad-button_primary whitespace-nowrap w-full">
                     Chat
                   </Button>
                 </Link>
