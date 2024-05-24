@@ -283,7 +283,7 @@ const PostDetails = () => {
             <div className="flex flex-col flex-1 w-full small-medium lg:base-regular border-b border-dark-4/80">
               <p className="font-extrabold leading-10">{post?.title}</p>
               {renderCaption()}
-              <ul className="flex gap-1 my-2">
+              <ul className="flex flex-wrap gap-1 my-2">
                 {post?.tags.map((tag: string, index: string) => (
                   <li
                     key={`${tag}${index}`}
