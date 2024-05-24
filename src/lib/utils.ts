@@ -206,3 +206,5 @@ export const convertEmoticons = (text: string): string => {
 
   return text.replace(/(:-?\)|:-?\(|:-?D|;-?\)|:-?P|:-?p|:-?[oO]|:-?\*|>:-?\(|>:-?\)|[XxBb]D|8-?\)|:-?\/|:-?\\|:-?\||3:-?\)|o\.O|O\.o|:-?'?\(|;'-?\()/g, match => emoticons[match] || match);
 };
+
+export const removeSpace = (input: string): string  => input.replace(/\s+/g, '');

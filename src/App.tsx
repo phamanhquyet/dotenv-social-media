@@ -46,7 +46,7 @@ const App = () => {
           <Route path="/chats" element={<ChatHome />} />
           <Route path="/chats/:id" element={<ChatSection />} />
           <Route path="/chatbot" element={<ChatBot />} />
-          <Route path="/plan" element={<PlanBoard />} />
+          <Route path="/plan/:id" element={<PlanBoard />} />
         </Route>
 
         {/* 404 Route */}

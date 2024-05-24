@@ -72,8 +72,10 @@ export type TaskT = {
 	priority: string;
 	deadline: number;
 	image?: string;
+  imageId?: string;
 	alt?: string;
 	tags: { title: string; bg: string; text: string }[];
+  status: string;
 };
 
 type Column = {

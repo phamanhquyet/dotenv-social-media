@@ -57,6 +57,9 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      backgroundImage: {
+        "my-image": "url(https://dotenvsocialmedia.click/v1/storage/buckets/6648c76a0003060c7afc/files/6650312e0014dba5ff78/view?project=66486682002da3faf55c&mode=admin)"
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],

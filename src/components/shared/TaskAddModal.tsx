@@ -87,7 +87,7 @@ const TaskAddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps
 					value={taskData.title}
 					onChange={handleChange}
 					placeholder="Title"
-					className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm font-medium"
+					className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm font-medium text-gray-400"
 				/>
 				<input
 					type="text"
@@ -95,13 +95,13 @@ const TaskAddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps
 					value={taskData.description}
 					onChange={handleChange}
 					placeholder="Description"
-					className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm font-medium"
+					className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm font-medium text-gray-400"
 				/>
 				<select
 					name="priority"
 					onChange={handleChange}
 					value={taskData.priority}
-					className="w-full h-12 px-2 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm"
+					className="w-full h-12 px-2 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm text-gray-400"
 				>
 					<option value="">Priority</option>
 					<option value="low">Low</option>
@@ -113,15 +113,15 @@ const TaskAddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps
 					name="deadline"
 					value={taskData.deadline}
 					onChange={handleChange}
-					placeholder="Deadline"
-					className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm"
+					placeholder="Deadline (minutes)"
+					className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm text-gray-400"
 				/>
 				<input
 					type="text"
 					value={tagTitle}
 					onChange={(e) => setTagTitle(e.target.value)}
 					placeholder="Tag Title"
-					className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm"
+					className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm text-gray-400"
 				/>
 				<button
 					className="w-full rounded-md h-9 bg-slate-500 text-amber-50 font-medium"
@@ -130,7 +130,7 @@ const TaskAddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps
 					Add Tag
 				</button>
 				<div className="w-full">
-					{taskData.tags && <span>Tags:</span>}
+					{taskData.tags && <span className='text-gray-400'>Tags:</span>}
 					{taskData.tags.map((tag, index) => (
 						<div
 							key={index}
@@ -142,19 +142,12 @@ const TaskAddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps
 					))}
 				</div>
 				<div className="w-full flex items-center gap-4 justify-between">
-					<input
-						type="text"
-						name="alt"
-						value={taskData.alt}
-						onChange={handleChange}
-						placeholder="Image Alt"
-						className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm"
-					/>
+					<span className="text-gray-400">Image</span>
 					<input
 						type="file"
 						name="image"
 						onChange={handleImageChange}
-						className="w-full"
+						className="w-full text-black"
 					/>
 				</div>
 				<button

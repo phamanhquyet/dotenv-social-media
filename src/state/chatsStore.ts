@@ -15,10 +15,26 @@ type Actions = {
 export const chatStore = create<States & Actions>()(
   devtools((set) => ({
     chats: [],
+    // addChat: (data: Models.Document) =>
+    //   set((state) => ({
+    //     chats: [...state.chats, data],
+    //   })),
     addChat: (data: Models.Document) =>
-      set((state) => ({
-        chats: [...state.chats, data],
-      })),
+      set((state) => {
+
+        // Kiểm tra xem chat có id tương tự đã tồn tại hay chưa
+        const isExisting = state.chats.some((chat) => chat.$id === data.$id);
+        if (!isExisting) {
+          // Chỉ thêm chat mới nếu nó chưa tồn tại
+          return {
+            ...state,
+            chats: [...state.chats, data],
+          };
+        } else {
+          // Ngược lại, không thêm gì vào state
+          return state;
+        }
+      }),
 
     addChats: (data: Array<Models.Document>) =>
       set(() => ({
