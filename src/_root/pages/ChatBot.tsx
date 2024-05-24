@@ -103,11 +103,9 @@ const ChatBot = () => {
 
     try {
       const response: AxiosResponse = await axios.request(options);
-      console.log(response);
       const botMessage: string = response.data.data.message;
       const sources: Source[] = response.data.data.sources;
       setConversationId(response.data.data.conversation_id);
-      console.log("sources: ", sources);
 
       // Chuyển đổi Markdown thành HTML
       //@ts-expect-error tam thoi bo qua loi nay
@@ -129,7 +127,6 @@ const ChatBot = () => {
       if (messagesEndRef.current) {
         messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
       }
-      console.log(messages);
     } catch (error) {
       console.error("Error fetching bot message:", error);
     } finally {

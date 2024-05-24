@@ -64,9 +64,6 @@ const PostForm = ({ post, action }: PostFormProps) => {
 
     // Check if the caption is valid
     if (!response.data.validCaption) {
-      console.log(
-        `Contains invalid words: ${response.data.invalidWords.join(", ")}`
-      );
       return toast({
         title: "Invalid caption",
         description: `Contains invalid words: ${response.data.invalidWords
@@ -98,7 +95,6 @@ const PostForm = ({ post, action }: PostFormProps) => {
         title: "Please try again",
       });
     }
-    console.log(newPost);
     databases
       .createDocument(
         appwriteConfig.databaseId,
@@ -121,18 +117,13 @@ const PostForm = ({ post, action }: PostFormProps) => {
           title: err.message,
         });
       });
-      console.log(newPost?.creators.$id);
-      console.log( newPost?.$id);
       // create participant
       databases.createDocument(
         appwriteConfig.databaseId,
         appwriteConfig.participantCollectionId,
         ID.unique(),
         { user: newPost?.creators.$id, post: newPost?.$id }
-      ).then((res) => {
-        console.log(res);
-      })
-      .catch((err: AppwriteException) => {
+      ).catch((err: AppwriteException) => {
         toast({
           title: err.message,
         });

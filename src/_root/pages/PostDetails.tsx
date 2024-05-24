@@ -101,7 +101,7 @@ const PostDetails = () => {
       client.subscribe(
         `databases.${appwriteConfig.databaseId}.collections.${appwriteConfig.commentCollectionId}.documents`,
         (response) => {
-          console.log("The realtime response is ", response);
+          //console.log("The realtime response is ", response);
           const payload = response.payload as Models.Document;
 
           //   * If It's new comment
