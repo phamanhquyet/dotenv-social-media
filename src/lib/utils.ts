@@ -133,3 +133,76 @@ export const removeAccentsAndWhitespace = (inputArray: (string | undefined)[]): 
 
   return processedStrings.join('');
 };
+
+export const base64ToFile = (
+  base64String: string,
+  fileName: string,
+  mimeType: string
+): File => {
+  // Convert the base64 string to a binary string
+  const byteString = atob(base64String.split(",")[1]);
+
+  // Create an array buffer and a view for the binary data
+  const arrayBuffer = new ArrayBuffer(byteString.length);
+  const uint8Array = new Uint8Array(arrayBuffer);
+
+  // Fill the array with the binary data
+  for (let i = 0; i < byteString.length; i++) {
+    uint8Array[i] = byteString.charCodeAt(i);
+  }
+
+  // Create a Blob from the array buffer
+  const blob = new Blob([arrayBuffer], { type: mimeType });
+
+  // Convert the Blob to a File
+  return new File([blob], fileName, { type: mimeType });
+};
+
+export const convertEmoticons = (text: string): string => {
+  const emoticons: { [key: string]: string } = {
+    ':)': '😊',      // smiley
+    ':-)': '😊',     // smiley with nose
+    ':(': '😢',      // sad face
+    ':-(': '😢',     // sad face with nose
+    ':D': '😁',      // big smile
+    ':-D': '😁',     // big smile with nose
+    ';)': '😉',      // wink
+    ';-)': '😉',     // wink with nose
+    ':P': '😛',      // tongue out
+    ':-P': '😛',     // tongue out with nose
+    ':p': '😛',      // tongue out
+    ':-p': '😛',     // tongue out with nose
+    ':o': '😮',      // surprised
+    ':-o': '😮',     // surprised with nose
+    ':O': '😮',      // surprised
+    ':-O': '😮',     // surprised with nose
+    ':*': '😘',      // kiss
+    ':-*': '😘',     // kiss with nose
+    '>:(': '😠',     // angry face
+    '>:-(': '😠',    // angry face with nose
+    '>:)': '😈',     // evil smile
+    '>:-)': '😈',    // evil smile with nose
+    'XD': '😆',      // laughing eyes closed
+    'xD': '😆',      // laughing eyes closed
+    '8)': '😎',      // sunglasses
+    '8-)': '😎',     // sunglasses with nose
+    'B)': '😎',      // sunglasses
+    'B-)': '😎',     // sunglasses with nose
+    ':/': '😕',      // unsure
+    ':-/': '😕',     // unsure with nose
+    ':\\': '😕',     // unsure
+    ':-\\': '😕',    // unsure with nose
+    ':|': '😐',      // neutral face
+    ':-|': '😐',     // neutral face with nose
+    '3:)': '😈',     // devil face
+    '3:-)': '😈',    // devil face with nose
+    'o.O': '😳',     // disbelieving
+    'O.o': '😳',     // disbelieving
+    ':\'(': '😭',    // crying
+    ':-\'(': '😭',   // crying with nose
+    ';(': '😭',      // crying wink
+    ';-(': '😭'      // crying wink with nose
+  };
+
+  return text.replace(/(:-?\)|:-?\(|:-?D|;-?\)|:-?P|:-?p|:-?[oO]|:-?\*|>:-?\(|>:-?\)|[XxBb]D|8-?\)|:-?\/|:-?\\|:-?\||3:-?\)|o\.O|O\.o|:-?'?\(|;'-?\()/g, match => emoticons[match] || match);
+};

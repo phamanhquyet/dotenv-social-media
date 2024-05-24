@@ -5,10 +5,11 @@ import { AppwriteException, ID, Models, Query } from "appwrite";
 import { appwriteConfig, client, databases } from "@/lib/appwrite/config";
 import { chatStore } from "@/state/chatsStore";
 import { userStore } from "@/state/userStore";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
+import { convertEmoticons } from "@/lib/utils";
 
 const ChatSection = () => {
   const navigate = useNavigate();
@@ -125,6 +126,12 @@ const ChatSection = () => {
   //       });
   //     });
   // };
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const text = event.target.value;
+    const convertedText = convertEmoticons(text);
+    setMessage(convertedText);
+  };
+
   const fetchMessage = () => {
     setLoading(true);
     databases
@@ -184,6 +191,11 @@ const ChatSection = () => {
             <div className="pl-4">
               <p className="text-2xl">{communityName}</p>
             </div>
+            <Link to={`/plan/${id}`} className="ml-auto">
+              <Button className="shad-button_primary whitespace-nowrap">
+                Plan Board
+              </Button>
+            </Link>
           </div>
           {/* Chat Messages */}
           <div className="flex-1 p-4 overflow-y-auto custom-scrollbar lg:mb-20">
@@ -245,7 +257,7 @@ const ChatSection = () => {
                 <Input
                   type="text"
                   placeholder="Type message..."
-                  onChange={(e) => setMessage(e.target.value)}
+                  onChange={handleChange}
                   value={message}
                   className="shad-input w-full"></Input>
                 <button

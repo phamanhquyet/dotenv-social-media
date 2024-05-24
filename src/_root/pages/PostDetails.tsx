@@ -25,7 +25,7 @@ import {
   useGetPostById,
   useGetUserPosts,
 } from "@/lib/react-query/queriesAndMutations";
-import { multiFormatDateString } from "@/lib/utils";
+import { convertEmoticons, multiFormatDateString } from "@/lib/utils";
 import { commentStore } from "@/state/commentsState";
 import { AppwriteException, ID, Models, Query } from "appwrite";
 import { useEffect, useRef, useState } from "react";
@@ -178,6 +178,12 @@ const PostDetails = () => {
           title: err.message,
         });
       });
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const text = event.target.value;
+    const convertedText = convertEmoticons(text);
+    setComment(convertedText);
   };
   return (
     <div className="post_details-container">
@@ -350,7 +356,7 @@ const PostDetails = () => {
               <Input
                 type="text"
                 placeholder="Write your comment..."
-                onChange={(e) => setComment(e.target.value)}
+                onChange={handleChange}
                 value={comment}
                 className="shad-input w-[87%]"
                 disabled={inputDisabled}></Input>
