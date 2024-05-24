@@ -1,6 +1,5 @@
 /* eslint-disable */
 import { AppwriteException, Query } from "appwrite";
-import { Spinner } from "@nextui-org/react";
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { communityStore } from "@/state/communityStore";
@@ -15,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "../ui/button";
+import Loader from "@/components/shared/Loader";
 
 const CommunitiesList = () => {
   const [loading, setLoading] = useState(false);
@@ -59,7 +59,7 @@ const CommunitiesList = () => {
     <div>
       <div className="text-center">
         {" "}
-        {loading && <Spinner color="danger" />}
+        {loading && <Loader />}
       </div>
       <div className="flex flex-wrap gap-2">
         {communityState.communities.length > 0 &&
