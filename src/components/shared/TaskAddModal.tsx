@@ -22,7 +22,7 @@ const TaskAddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps
 		title: "",
 		description: "",
 		priority: "",
-		deadline: 0,
+		deadline: "",
 		image: "",
 		alt: "",
 		tags: [] as Tag[],

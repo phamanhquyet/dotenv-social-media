@@ -207,4 +207,23 @@ export const convertEmoticons = (text: string): string => {
   return text.replace(/(:-?\)|:-?\(|:-?D|;-?\)|:-?P|:-?p|:-?[oO]|:-?\*|>:-?\(|>:-?\)|[XxBb]D|8-?\)|:-?\/|:-?\\|:-?\||3:-?\)|o\.O|O\.o|:-?'?\(|;'-?\()/g, match => emoticons[match] || match);
 };
 
-export const removeSpace = (input: string): string  => input.replace(/\s+/g, '');
+export const removeSpace = (input: string): string => input.replace(/\s+/g, "");
+
+export const formatDeadline = (minutes: number): string => {
+  const minsPerHour = 60;
+  const minsPerDay = 1440;
+  const minsPerWeek = 10080;
+
+  if (minutes >= minsPerWeek) {
+    const weeks = Math.floor(minutes / minsPerWeek);
+    return `${weeks} week${weeks > 1 ? "s" : ""}`;
+  } else if (minutes >= minsPerDay) {
+    const days = Math.floor(minutes / minsPerDay);
+    return `${days} day${days > 1 ? "s" : ""}`;
+  } else if (minutes >= minsPerHour) {
+    const hours = Math.floor(minutes / minsPerHour);
+    return `${hours} hour${hours > 1 ? "s" : ""}`;
+  } else {
+    return `${minutes} minutes`;
+  }
+};

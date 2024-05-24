@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { formatDeadline } from "@/lib/utils";
 import { TaskT } from "@/types";
 import { TimeOutline } from "react-ionicons";
 import { CloseOutline, PencilOutline } from 'react-ionicons';
@@ -47,7 +48,7 @@ const Task = ({ task, provided, onDelete }: TaskProps) => {
       <div className="w-full flex items-center justify-between">
         <div className="flex items-center gap-1">
           <TimeOutline color={"#666"} width="19px" height="19px" />
-          <span className="text-[13px] text-gray-700">{deadline} mins</span>
+          <span className="text-[13px] text-gray-700">{formatDeadline(deadline)}</span>
         </div>
         <div
           className={`w-[60px] rounded-full h-[5px] ${
