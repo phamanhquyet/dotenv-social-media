@@ -8,9 +8,10 @@ interface TaskProps {
 	task: TaskT;
 	provided: any;
 	onDelete: any;	
+  onEdit: any;  
 }
 
-const Task = ({ task, provided, onDelete }: TaskProps) => {
+const Task = ({ task, provided, onDelete, onEdit  }: TaskProps) => {
   const { title, description, priority, deadline, image, alt, tags } = task;
 
   return (
@@ -22,7 +23,7 @@ const Task = ({ task, provided, onDelete }: TaskProps) => {
       {image && (
         <img src={image} alt={alt} className="w-full h-[170px] rounded-lg" />
       )}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-wrap">
         {tags.map((tag) => (
           <span
             key={tag.title}
@@ -32,7 +33,7 @@ const Task = ({ task, provided, onDelete }: TaskProps) => {
           </span>
         ))}
 		<div className="flex items-center gap-1">
-                    <button className="p-1">
+                    <button onClick={() => onEdit(task)} className="p-1">
                         <PencilOutline color={'#555555'} title="Edit task" height="20px" width="20px" />
                     </button>
                     <button onClick={() => onDelete(task)} className="p-1">

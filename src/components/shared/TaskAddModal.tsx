@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable */
 import { getRandomColors } from '@/lib/plan-board/getRandomColors';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from "uuid";
 
 interface Tag {
@@ -14,10 +15,11 @@ interface AddModalProps {
 	onClose: () => void;
 	setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	handleAddTask: (taskData: any) => void;
+	taskToEdit?: any;
 }
 
-const TaskAddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps) => {
-    const initialTaskData = {
+const TaskAddModal = ({ isOpen, onClose, setOpen, handleAddTask, taskToEdit  }: AddModalProps) => {
+    const initialTaskData = taskToEdit ?? {
 		id: uuidv4(),
 		title: "",
 		description: "",
@@ -30,6 +32,10 @@ const TaskAddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps
 
 	const [taskData, setTaskData] = useState(initialTaskData);
 	const [tagTitle, setTagTitle] = useState("");
+
+	useEffect(() => {
+        setTaskData(initialTaskData);
+    }, [isOpen, taskToEdit]);
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -66,7 +72,7 @@ const TaskAddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps
 	};
 
 	const handleSubmit = () => {
-		handleAddTask(taskData);
+		handleAddTask({ ...taskData, id: taskData.id || uuidv4() });
 		closeModal();
 	};
 
@@ -131,7 +137,7 @@ const TaskAddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps
 				</button>
 				<div className="w-full">
 					{taskData.tags && <span className='text-gray-400'>Tags:</span>}
-					{taskData.tags.map((tag, index) => (
+					{taskData.tags.map((tag: any, index: any) => (
 						<div
 							key={index}
 							className="inline-block mx-1 px-[10px] py-[2px] text-[13px] font-medium rounded-md"

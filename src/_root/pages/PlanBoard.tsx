@@ -6,7 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { appwriteConfig, databases } from "@/lib/appwrite/config";
 import { Board } from "@/lib/plan-board/board";
 import { onDragEnd } from "@/lib/plan-board/onDragEnd";
-import { Columns } from "@/types";
+import { Columns, TaskT } from "@/types";
 import { Query } from "appwrite";
 import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -22,6 +22,7 @@ const PlanBoard = () => {
   const [selectedColumn, setSelectedColumn] = useState("");
   const { id } = useParams();
   const { toast } = useToast();
+  const [taskToEdit, setTaskToEdit] = useState<TaskT | undefined>(undefined);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -77,61 +78,102 @@ const PlanBoard = () => {
 
   const closeModal = () => {
     setModalOpen(false);
+    setTaskToEdit(undefined);
   };
   const handleAddTask = async (taskData: any) => {
     const newBoard = { ...columns };
 
     try {
+      const oldImageId = taskData.imageId;
       let fileUrl, uploadedFile;
-      if (taskData.image !== "") {
-        //Upload image to storage
+
+      // if (taskData.image !== "") {
+      //   //Upload image to storage
+      //   uploadedFile = await uploadFile(
+      //     base64ToFile(taskData.image, "image.jpg", "image/jpeg")
+      //   );
+
+      //   if (!uploadedFile) throw Error;
+
+      //   //get file url
+      //   fileUrl = getFilePreview(uploadedFile.$id);
+
+      //   if (!fileUrl) {
+      //     await deleteFile(uploadedFile.$id);
+      //     throw Error;
+      //   }
+      // }
+      if (taskData.image && !taskData.image.startsWith("http")) {
+        // Check if new image needs upload
         uploadedFile = await uploadFile(
           base64ToFile(taskData.image, "image.jpg", "image/jpeg")
         );
+        if (!uploadedFile) throw new Error("Failed to upload image.");
 
-        if (!uploadedFile) throw Error;
-
-        //get file url
         fileUrl = getFilePreview(uploadedFile.$id);
-
-        if (!fileUrl) {
-          await deleteFile(uploadedFile.$id);
-          throw Error;
+        taskData.imageUrl = fileUrl; // Update image URL
+        taskData.imageId = uploadedFile.$id; // Store image ID for possible deletion
+        
+      }
+      if (taskToEdit) {
+        if(oldImageId !== "") {
+          deleteFile(oldImageId);
+        }
+        databases.updateDocument(
+          appwriteConfig.databaseId,
+          appwriteConfig.taskCollectionId,
+          taskData.id,
+          {
+            title: taskData.title,
+            description: taskData.description,
+            priority: taskData.priority,
+            deadline: Number(taskData.deadline),
+            tags: taskData.tags.map((tag: any) => tag.title),
+            imageUrl: taskData.imageUrl,
+            imageId: taskData.imageId,
+            status: removeSpace(taskData.status),
+          }
+        );
+        // Update task in local state
+        const updatedItems = newBoard[taskData.status].items.map((item) =>
+          item.id === taskData.id ? { ...item, ...taskData } : item
+        );
+        console.log(updatedItems);
+        newBoard[taskData.status].items = updatedItems;
+      } else {
+        const task = await databases.createDocument(
+          appwriteConfig.databaseId,
+          appwriteConfig.taskCollectionId,
+          taskData.id,
+          {
+            community_id: id,
+            title: taskData.title,
+            description: taskData.description,
+            priority: taskData.priority,
+            deadline: Number(taskData.deadline),
+            tags: taskData.tags.map((tag: any) => tag.title),
+            status: removeSpace(selectedColumn),
+            imageUrl: fileUrl ? fileUrl : null,
+            imageId: uploadedFile ? uploadedFile.$id : null,
+          }
+        );
+        if (task) {
+          const updatedItems = [...newBoard[selectedColumn].items, taskData];
+          newBoard[selectedColumn].items = updatedItems;
+          setColumns(newBoard);
         }
       }
-
-      const task = await databases.createDocument(
-        appwriteConfig.databaseId,
-        appwriteConfig.taskCollectionId,
-        taskData.id,
-        {
-          community_id: id,
-          title: taskData.title,
-          description: taskData.description,
-          priority: taskData.priority,
-          deadline: Number(taskData.deadline),
-          tags: taskData.tags.map((tag: any) => tag.title),
-          status: removeSpace(selectedColumn),
-          imageUrl: fileUrl ? fileUrl : null,
-          imageId: uploadedFile ? uploadedFile.$id : null,
-        }
-      );
-      if (task) {
-        //newBoard[selectedColumn].items.push(taskData);
-        const updatedItems = [...newBoard[selectedColumn].items, taskData];
-        newBoard[selectedColumn].items = updatedItems;
-        setColumns(newBoard);
-      }
-    } catch (error: any) {
-      toast({
-        title: error.message,
-      });
+    } catch (error) {
+      console.error("Error updating or adding task: ", error);
     }
+    setModalOpen(false);
+    setTaskToEdit(undefined);
   };
 
   const handleDeleteTask = async (task: any) => {
     const updatedColumns = { ...columns };
     console.log(task);
+    console.log(updatedColumns);
     const tasks = updatedColumns[task.status].items;
     const updatedTasks = tasks.filter((t) => t.id !== task.id);
     updatedColumns[task.status].items = updatedTasks;
@@ -149,15 +191,21 @@ const PlanBoard = () => {
       await deleteFile(task.imageId);
     }
   };
+
+  const handleEditTask = (task: TaskT) => {
+    setTaskToEdit(task);
+    setModalOpen(true);
+};
   return (
     <div className="w-full h-full overflow-x-auto relative bg-my-image bg-cover bg-no-repeat bg-center">
       <div className="w-full h-full overflow-y-auto">
         <>
           <DragDropContext
-            onDragEnd={(result: any) => onDragEnd(result, columns, setColumns)}>
+            onDragEnd={(result: any) => onDragEnd(result, columns, setColumns)}> 
             <div className="flex no-wrap overflow-x-auto px-5 py-8">
               {Object.entries(columns).map(([columnId, column]: any) => (
                 <div key={columnId}>
+                  {/* TODO: Tạo một biến boolean để kiểm tra xem user hiện tại có phải chủ post không? nếu có thì cho prop isDropDisabled trong Droppable = false và ngược lại */}
                   <Droppable droppableId={columnId} key={columnId}>
                     {(provided: any) => (
                       <div
@@ -178,6 +226,7 @@ const PlanBoard = () => {
                                   provided={provided}
                                   task={task}
                                   onDelete={handleDeleteTask}
+                                  onEdit={handleEditTask}
                                 />
                               </>
                             )}
@@ -203,6 +252,7 @@ const PlanBoard = () => {
             onClose={closeModal}
             setOpen={setModalOpen}
             handleAddTask={handleAddTask}
+            taskToEdit={taskToEdit}
           />
         </>
       </div>
