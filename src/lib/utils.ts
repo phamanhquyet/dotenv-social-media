@@ -209,21 +209,27 @@ export const convertEmoticons = (text: string): string => {
 
 export const removeSpace = (input: string): string => input.replace(/\s+/g, "");
 
-export const formatDeadline = (minutes: number): string => {
-  const minsPerHour = 60;
-  const minsPerDay = 1440;
-  const minsPerWeek = 10080;
+export const formatDeadline = (hours: number): string => {
+  const hoursPerDay = 24;
+    const hoursPerWeek = 168;
 
-  if (minutes >= minsPerWeek) {
-    const weeks = Math.floor(minutes / minsPerWeek);
-    return `${weeks} week${weeks > 1 ? "s" : ""}`;
-  } else if (minutes >= minsPerDay) {
-    const days = Math.floor(minutes / minsPerDay);
-    return `${days} day${days > 1 ? "s" : ""}`;
-  } else if (minutes >= minsPerHour) {
-    const hours = Math.floor(minutes / minsPerHour);
-    return `${hours} hour${hours > 1 ? "s" : ""}`;
-  } else {
-    return `${minutes} minutes`;
-  }
+    // Nếu số giờ nhỏ hơn 1, chuyển đổi thành phút
+    if (hours < 1) {
+        const minutes = Math.round(hours * 60);
+        return `${minutes} min${minutes !== 1 ? 's' : ''}`;
+    }
+    // Chuyển đổi giờ thành tuần nếu đủ giờ trong một tuần
+    else if (hours >= hoursPerWeek) {
+        const weeks = Math.floor(hours / hoursPerWeek);
+        return `${weeks} week${weeks > 1 ? 's' : ''}`;
+    }
+    // Chuyển đổi giờ thành ngày nếu đủ giờ trong một ngày
+    else if (hours >= hoursPerDay) {
+        const days = Math.floor(hours / hoursPerDay);
+        return `${days} day${days > 1 ? 's' : ''}`;
+    }
+    // Nếu không đủ để thành ngày thì chỉ trả về số giờ
+    else {
+        return `${hours} hour${hours > 1 ? 's' : ''}`;
+    }
 };

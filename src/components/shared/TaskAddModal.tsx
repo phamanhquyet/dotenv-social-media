@@ -113,7 +113,7 @@ const TaskAddModal = ({ isOpen, onClose, setOpen, handleAddTask }: AddModalProps
 					name="deadline"
 					value={taskData.deadline}
 					onChange={handleChange}
-					placeholder="Deadline (minutes)"
+					placeholder="Deadline (hours)"
 					className="w-full h-12 px-3 outline-none rounded-md bg-slate-100 border border-slate-300 text-sm text-gray-400"
 				/>
 				<input
