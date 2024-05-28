@@ -4,7 +4,7 @@ import { account, appwriteConfig, avatars, databases, storage } from "./config";
 import {
   convertListStringsToLowerCase,
   convertToLowerCase,
-  removeVietnameseAccents,
+  removeWhitespace,
 } from "../utils";
 
 export async function createUserAccount(user: INewUser) {
@@ -111,16 +111,24 @@ export async function createPost(post: INewPost) {
       post.caption,
       post.location,
     ]);
-    //remove all vietnamese accents
-    const removedAccents = removeVietnameseAccents([
+    // //remove all vietnamese accents
+    // const removedAccents = removeVietnameseAccents([
+    //   post.title,
+    //   post.caption,
+    //   post.location,
+    // ]);
+
+    //remove all whitespace
+    const removedWhiteSpace = removeWhitespace([
       post.title,
       post.caption,
       post.location,
     ]);
 
+
     const searchString = convertedStrings.concat(
       " ",
-      removedAccents,
+      removedWhiteSpace,
       tags.join("")
     );
     //save post to database
@@ -303,14 +311,22 @@ export async function updatePost(post: IUpdatePost) {
       post.location,
     ]);
     //remove all vietnamese accents
-    const removedAccents = removeVietnameseAccents([
+    // const removedAccents = removeVietnameseAccents([
+    //   post.title,
+    //   post.caption,
+    //   post.location,
+    // ]);
+
+    //remove all whitespace
+    const removedWhiteSpace = removeWhitespace([
       post.title,
       post.caption,
       post.location,
     ]);
+
     const searchString = convertedStrings.concat(
       " ",
-      removedAccents,
+      removedWhiteSpace,
       tags.join("")
     );
     //save post to database
