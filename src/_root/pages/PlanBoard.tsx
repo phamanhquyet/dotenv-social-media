@@ -236,10 +236,9 @@ const PlanBoard = () => {
           </div>
           <DragDropContext
             onDragEnd={(result: any) => onDragEnd(result, columns, setColumns)}>
-            <div className="flex no-wrap overflow-x-auto px-5 py-8">
+            <div className="flex no-wrap overflow-x-auto px-5 py-2">
               {Object.entries(columns).map(([columnId, column]: any) => (
                 <div key={columnId}>
-                  {/* TODO: Tạo một biến boolean để kiểm tra xem user hiện tại có phải chủ post không? nếu có thì cho prop isDropDisabled trong Droppable = false và ngược lại */}
                   <Droppable droppableId={columnId} key={columnId}>
                     {(provided: any) => (
                       <div
