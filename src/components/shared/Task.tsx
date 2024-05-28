@@ -8,10 +8,11 @@ interface TaskProps {
 	task: TaskT;
 	provided: any;
 	onDelete: any;	
-  onEdit: any;  
+  onEdit: any;
+  isEditable: boolean;  
 }
 
-const Task = ({ task, provided, onDelete, onEdit  }: TaskProps) => {
+const Task = ({ task, provided, onDelete, onEdit, isEditable }: TaskProps) => {
   const { title, description, priority, deadline, image, alt, tags } = task;
 
   return (
@@ -32,14 +33,16 @@ const Task = ({ task, provided, onDelete, onEdit  }: TaskProps) => {
             {tag.title}
           </span>
         ))}
-		<div className="flex items-center gap-1">
-                    <button onClick={() => onEdit(task)} className="p-1">
-                        <PencilOutline color={'#555555'} title="Edit task" height="20px" width="20px" />
-                    </button>
-                    <button onClick={() => onDelete(task)} className="p-1">
-                        <CloseOutline color={'#FF0000'} title="Delete task" height="20px" width="20px" />
-                    </button>
-                </div>
+        {isEditable && (
+          <div className="flex items-center gap-1">
+            <button onClick={() => onEdit(task)} className="p-1">
+              <PencilOutline color={'#555555'} title="Edit task" height="20px" width="20px" />
+            </button>
+            <button onClick={() => onDelete(task)} className="p-1">
+              <CloseOutline color={'#FF0000'} title="Delete task" height="20px" width="20px" />
+            </button>
+          </div>
+        )}
       </div>
       <div className="w-full flex items-start flex-col gap-0">
         <span className="text-[15.5px] font-medium text-[#555]">{title}</span>
@@ -49,7 +52,9 @@ const Task = ({ task, provided, onDelete, onEdit  }: TaskProps) => {
       <div className="w-full flex items-center justify-between">
         <div className="flex items-center gap-1">
           <TimeOutline color={"#666"} width="19px" height="19px" />
-          <span className="text-[13px] text-gray-700">{formatDeadline(deadline)}</span>
+          <span className="text-[13px] text-gray-700">
+            {formatDeadline(deadline)}
+          </span>
         </div>
         <div
           className={`w-[60px] rounded-full h-[5px] ${

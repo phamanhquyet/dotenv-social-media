@@ -72,6 +72,17 @@ export async function getCurrentUser() {
       [Query.equal("accountId", currentAccount.$id)]
     );
     if (!currentUser) throw Error;
+    const userData = {
+      id: currentUser.documents[0].$id,
+      name: currentUser.documents[0].name,
+      username: currentUser.documents[0].username,
+      email: currentUser.documents[0].email,
+      imageUrl: currentUser.documents[0].iamgeUrl,
+      bio: currentUser.documents[0].bio,
+    };
+
+    localStorage.setItem('user', JSON.stringify(userData));
+    
     return currentUser.documents[0];
   } catch (error) {
     console.log(error);
@@ -81,6 +92,7 @@ export async function getCurrentUser() {
 export async function signOutAccount() {
   try {
     const session = await account.deleteSession("current");
+    localStorage.removeItem('user');
     return session;
   } catch (error) {
     console.log(error);

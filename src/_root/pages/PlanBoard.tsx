@@ -11,10 +11,11 @@ import { Query } from "appwrite";
 import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { AddOutline } from "react-ionicons";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getRandomColors } from "@/lib/plan-board/getRandomColors";
 import { deleteFile, getFilePreview, uploadFile } from "@/lib/appwrite/api";
 import { base64ToFile, removeSpace } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const PlanBoard = () => {
   const [columns, setColumns] = useState<Columns>(Board);
@@ -23,8 +24,16 @@ const PlanBoard = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const [taskToEdit, setTaskToEdit] = useState<TaskT | undefined>(undefined);
+  const [isEditable, setIsEditable] = useState(false);
+  const navigate = useNavigate();
+  
 
+  function getUserFromLocalStorage() {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  }
   useEffect(() => {
+    const user = getUserFromLocalStorage()
     const fetchTasks = async () => {
       try {
         for (const key in columns) {
@@ -59,7 +68,6 @@ const PlanBoard = () => {
               status: task.status,
             });
           });
-          console.log(newBoard);
           setColumns(newBoard);
         }
       } catch (error: any) {
@@ -68,7 +76,22 @@ const PlanBoard = () => {
         });
       }
     };
+    const checkIsEditable = async () => {
+      try {
+        const participants = await databases.listDocuments(
+          appwriteConfig.databaseId,
+          appwriteConfig.communityCollectionId,
+          [Query.equal("$id", id ?? "")]
+        );
+        if(participants.documents[0].participants[0] === user.id) {
+          setIsEditable(true);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
     fetchTasks();
+    checkIsEditable();
   }, []);
 
   const openModal = (columnId: any) => {
@@ -138,7 +161,6 @@ const PlanBoard = () => {
         const updatedItems = newBoard[taskData.status].items.map((item) =>
           item.id === taskData.id ? { ...item, ...taskData } : item
         );
-        console.log(updatedItems);
         newBoard[taskData.status].items = updatedItems;
       } else {
         const task = await databases.createDocument(
@@ -172,8 +194,6 @@ const PlanBoard = () => {
 
   const handleDeleteTask = async (task: any) => {
     const updatedColumns = { ...columns };
-    console.log(task);
-    console.log(updatedColumns);
     const tasks = updatedColumns[task.status].items;
     const updatedTasks = tasks.filter((t) => t.id !== task.id);
     updatedColumns[task.status].items = updatedTasks;
@@ -200,8 +220,22 @@ const PlanBoard = () => {
     <div className="w-full h-full overflow-x-auto relative bg-my-image bg-cover bg-no-repeat bg-center">
       <div className="w-full h-full overflow-y-auto">
         <>
+          <div className="flex flex-col">
+            <Button
+              onClick={() => navigate(-1)}
+              variant="ghost"
+              className="shad-button_ghost">
+              <img
+                src={"/assets/icons/back.svg"}
+                alt="back"
+                width={24}
+                height={24}
+              />
+              <p className="small-medium lg:base-medium">Back</p>
+            </Button>
+          </div>
           <DragDropContext
-            onDragEnd={(result: any) => onDragEnd(result, columns, setColumns)}> 
+            onDragEnd={(result: any) => onDragEnd(result, columns, setColumns)}>
             <div className="flex no-wrap overflow-x-auto px-5 py-8">
               {Object.entries(columns).map(([columnId, column]: any) => (
                 <div key={columnId}>
@@ -219,7 +253,8 @@ const PlanBoard = () => {
                           <Draggable
                             key={task.id.toString()}
                             draggableId={task.id.toString()}
-                            index={index}>
+                            index={index}
+                            isDragDisabled={!isEditable}>
                             {(provided: any) => (
                               <>
                                 <Task
@@ -227,6 +262,7 @@ const PlanBoard = () => {
                                   task={task}
                                   onDelete={handleDeleteTask}
                                   onEdit={handleEditTask}
+                                  isEditable={isEditable}
                                 />
                               </>
                             )}
@@ -236,11 +272,15 @@ const PlanBoard = () => {
                       </div>
                     )}
                   </Droppable>
-                  <div
-                    onClick={() => openModal(columnId)}
-                    className="mt-3 py-[10px] max-w-[290px] bg-white text-[#555] font-medium opacity-90 rounded-lg shadow-sm text-[15px] flex cursor-pointer items-center justify-center ">
-                    <AddOutline color={"#555"} />
-                    Add Task
+                  <div>
+                    {isEditable && (
+                      <div
+                        onClick={() => openModal(columnId)}
+                        className="mt-3 py-[10px] max-w-[290px] bg-white text-[#555] font-medium opacity-90 rounded-lg shadow-sm text-[15px] flex cursor-pointer items-center justify-center ">
+                        <AddOutline color={"#555"} />
+                        Add Task
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
